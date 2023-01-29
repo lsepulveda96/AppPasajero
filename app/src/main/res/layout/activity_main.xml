@@ -1,0 +1,97 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:ignore="ContentDescrpition"
+    tools:context="com.example.lucianodsepulveda.apppasajero.ui.MainActivity">
+
+
+
+
+
+  <Button
+      android:id="@+id/btnParadasCercanas"
+      android:layout_width="324dp"
+      android:layout_height="102dp"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:layout_marginStart="44dp"
+      android:layout_marginTop="316dp"
+      android:text="Activity ParadasCercanas"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="44dp" />
+
+
+  <Button
+      android:id="@+id/btnScannerQR"
+      android:layout_width="324dp"
+      android:layout_height="100dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginEnd="45dp"
+      android:layout_marginBottom="181dp"
+      android:text="Activity ScannerQR"
+      android:layout_alignParentRight="true"
+      android:layout_marginRight="45dp" />
+
+  <Button
+      android:id="@+id/btnFavoritos"
+      android:layout_width="326dp"
+      android:layout_height="102dp"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:layout_marginStart="34dp"
+      android:layout_marginTop="586dp"
+      android:text="Activity Favoritos"
+      android:layout_marginLeft="34dp"
+      android:layout_alignParentLeft="true" />
+
+  <ImageView
+      android:id="@+id/imgFondo"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="-1dp"
+      android:src="@drawable/homerentalapp4" />
+
+
+  <Button
+      android:id="@+id/BtnMVP"
+      android:onClick="calcular"
+      android:layout_width="142dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginTop="10dp"
+      android:text="Calcular" />
+
+
+  <EditText
+      android:id="@+id/EditTextMVP"
+      android:layout_width="154dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginTop="68dp"
+      android:hint="escriba algo"/>
+
+
+  <TextView
+      android:id="@+id/TextViewMVP"
+      android:layout_width="125dp"
+      android:layout_height="wrap_content"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_marginTop="135dp"
+      android:textColor="@color/colorPrimary"
+      android:hint="esperando.."/>
+
+</RelativeLayout>
+
+
+
+

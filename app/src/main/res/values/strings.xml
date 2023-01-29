@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">STCU</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps2">Map</string>
+    <!--<string name="app_name">Lector Codigo QR - STCU</string>-->
+    <string name="take_barcode_picture">Tomar Foto Img Codigo QR</string>
+    <string name="scan_barcode">Escanear Codigo QR</string>
+    <string name="open_camera">ABRIR CAMARA</string>
+    <string name="send_email">SEND EMAIL</string>
+    <!--<string name="app_name">STCU</string>-->
+    <string name="quotedesc">Bienvenido!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
