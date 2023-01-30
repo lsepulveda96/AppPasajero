@@ -34,4 +34,9 @@ public class ParadasCercanasPresenter implements ParadasCercanasInterface.Presen
     public void obtenerPermisos() {
         model.obtenerPermisos();
     }
+
+    @Override
+    public String obtenerRadio(String seleccionRadio) {
+        return model.obtenerRadio(seleccionRadio);
+    }
 }

@@ -68,7 +68,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         setContentView(R.layout.activity_paradas_cercanas);
 
         presenter.obtenerPermisos();
-//        obtenerPermisos();
         inicializarElementos();
         try {
             obtenerParadasCercanas();
@@ -106,19 +105,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
             tvDisponibilidadInternet.setText("Sin conexion a internet");
         }
     }
-
-    //TODO pasar a model
-//    private void obtenerPermisos() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                Log.i("Permisos", "Se tienen los permisos!");
-//            } else {
-//                ActivityCompat.requestPermissions(
-//                        this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 1222);
-//            }
-//        }
-//    }
 
     private void obtenerParadasCercanas() throws InterruptedException {
         String[] opciones = {"5 cuadras", "10 cuadras", "20 cuadras", "50 cuadras"};
@@ -231,7 +217,9 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
     //TODO pasar a model
     private List<ParadaCercana> obtenerListaParadasCercanas(List<ParadaCercana> paradas) throws InterruptedException {
-        obtenerRadio();
+
+        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
+//        obtenerRadio();
         List<ParadaCercana> listaFinalParadasCercanas = new ArrayList<ParadaCercana>();
         Double radioD = Double.parseDouble(eleccionRadioParadas);
 
@@ -326,23 +314,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
     }
 
     //TODO pasar a model
-    //metodo que recupera la eleccion del usuario
-    public void obtenerRadio() {
-
-        String seleccionRadio = itemSeleccionRadio.getSelectedItem().toString();
-        //"5 cuadras","10 cuadras","20 cuadras","50 cuadras"
-        if (seleccionRadio.equals("5 cuadras")) {
-            eleccionRadioParadas = "500.0";
-        } else if (seleccionRadio.equals("10 cuadras")) {
-            eleccionRadioParadas = "1000.0";
-        } else if (seleccionRadio.equals("20 cuadras")) {
-            eleccionRadioParadas = "2000.0";
-        } else if (seleccionRadio.equals("50 cuadras")) {
-            eleccionRadioParadas = "5000.0";
-        }
-    }
-
-    //TODO pasar a model
     public void actualizarInformacion(View view) {
 
         boolean redHab = isOnlineNet();
@@ -434,6 +405,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         Boolean bandera = true;
         long cont = 0;
 
+        //esto se puede mejorar
         while(bandera && cont < 20000000) {
             if (listaParadas.size() != 0) {
                 bandera = false;
@@ -445,7 +417,8 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
     public List<ParadaCercana> obtenerParadasDesdeServidor(){
         String seleccionLinea = itemSeleccionLinea.getSelectedItem().toString();
-        obtenerRadio();
+        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
+//        obtenerRadio();
         MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
         List<ParadaCercana> listaTodasParadas = fragment.hacerConsultaParadasRecorrido(seleccionLinea);
         return listaTodasParadas;

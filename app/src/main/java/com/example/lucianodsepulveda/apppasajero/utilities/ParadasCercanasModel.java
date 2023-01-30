@@ -36,4 +36,24 @@ public class ParadasCercanasModel implements ParadasCercanasInterface.Model {
         }
     }
 
+    public String obtenerRadio(String seleccionRadio) {
+
+        String eleccionRadioParadas = "500.0"; //para inicializar con algun valor y que no haya errores
+
+//        String seleccionRadio = itemSeleccionRadio.getSelectedItem().toString();
+        //"5 cuadras","10 cuadras","20 cuadras","50 cuadras"
+        if (seleccionRadio.equals("5 cuadras")) {
+            eleccionRadioParadas = "500.0";
+        } else if (seleccionRadio.equals("10 cuadras")) {
+            eleccionRadioParadas = "1000.0";
+        } else if (seleccionRadio.equals("20 cuadras")) {
+            eleccionRadioParadas = "2000.0";
+        } else if (seleccionRadio.equals("50 cuadras")) {
+            eleccionRadioParadas = "5000.0";
+        }
+
+        return eleccionRadioParadas;
+    }
+
+
 }

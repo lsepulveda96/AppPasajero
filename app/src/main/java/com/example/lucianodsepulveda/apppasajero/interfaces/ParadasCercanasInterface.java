@@ -13,10 +13,14 @@ public interface ParadasCercanasInterface {
 
         //se comunica con el modelo, se ejecuta en el presenter
         void obtenerPermisos();
+
+        String obtenerRadio(String seleccionRadio);
     }
 
     interface Model{
         void obtenerPermisos();
+
+        String obtenerRadio(String seleccionRadio);
         //mismo metodo para el modelo, se ejecuta en el model
 //        void alCuadrado(String data);
 
