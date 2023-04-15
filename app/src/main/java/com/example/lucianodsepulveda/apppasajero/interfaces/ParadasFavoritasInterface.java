@@ -1,5 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.interfaces;
 
+import android.net.NetworkInfo;
+
 public interface ParadasFavoritasInterface {
 
     interface View{
@@ -11,15 +13,19 @@ public interface ParadasFavoritasInterface {
         //se comunica con la vista, necesita el mismo metodo
         void showResultPresenter(String result);
         //se comunica con el modelo, se ejecuta en el presenter
-        public boolean isNetAvailable();
-        boolean isOnlineNet();
+
+        NetworkInfo isNetAvailable();
     }
 
-    interface Model{
+    /*interface Model{
         //mismo metodo para el modelo, se ejecuta en el model
 //        void alCuadrado(String data);
         public boolean isNetAvailable();
         public boolean isOnlineNet();
+    }*/
+
+    interface Interactor {
+        NetworkInfo isNetAvailable();
     }
 
 

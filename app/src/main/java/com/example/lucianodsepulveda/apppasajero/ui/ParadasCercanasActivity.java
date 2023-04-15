@@ -1,13 +1,10 @@
 package com.example.lucianodsepulveda.apppasajero.ui;
 
-import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -22,13 +19,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasCercanasInterface;
+import com.example.lucianodsepulveda.apppasajero.model.ParadaCercana;
 import com.example.lucianodsepulveda.apppasajero.presenter.ParadasCercanasPresenter;
-import com.example.lucianodsepulveda.apppasajero.utilities.ParadaCercana;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,29 +31,65 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 public class ParadasCercanasActivity extends FragmentActivity implements ParadasCercanasInterface.View {
 
-    private Button btnObtenerUbicacion;
-    private Button btnEncontrarUbicacion;
-    private TextView tvUbicacion;
-    private String miLatitud;
-    private String miLongitud;
-    private String eleccionRadioParadas;
-    private List<ParadaCercana> listaParadas;
-    private List<ParadaCercana> listaParadasCercanas;
-    private Spinner itemSeleccionRadio;
-    private Spinner itemSeleccionLinea;
-    private TextView tvRadio;
+
+    private Button btnObtenerUbicacion, btnEncontrarUbicacion;
+//    private Button btnEncontrarUbicacion;
+//    private TextView tvUbicacion;
+//    private String miLatitud;
+    private List<String> lineasDisponibles;
+    private String miLongitud, eleccionRadioParadas, miLatitud;
+//    private String eleccionRadioParadas;
+    private List<ParadaCercana> listaParadasExistentes, listaParadasCercanas;
+//    private List<ParadaCercana> listaParadasCercanas;
+    private Spinner itemSeleccionRadio, itemSeleccionLinea;
+//    private Spinner itemSeleccionLinea;
+    private TextView tvRadio, tvUbicacion, tvDisponibilidadRed, tvDisponibilidadInternet, tvNetwork;
     private ArrayAdapter<String> adapter;
     private ProgressBar progressBar;
-    private TextView tvDisponibilidadRed;
-    private TextView tvDisponibilidadInternet;
-    private ProgressDialog dialogBuscandoUbicacion;
-    private ProgressDialog dialogBuscandoParadas;
-    private ProgressDialog dialogCargandoLineas;
+//    private TextView tvDisponibilidadRed, tvDisponibilidadInternet;
+//    private TextView tvDisponibilidadInternet;
+    private ProgressDialog dialogBuscandoUbicacion, dialogBuscandoParadas, dialogCargandoLineas;
+//    private ProgressDialog dialogBuscandoParadas;
+//    private ProgressDialog dialogCargandoLineas;
 
     //para interface
     ParadasCercanasInterface.Presenter presenter;
+
+    private SwipeRefreshLayout swipe;
+
+    //necesario para comprobar internet en tiempo real
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            checkStatus();
+        }
+    };
+
+    //necesario para comprobar internet en tiempo real
+    private void checkStatus(){
+
+
+        NetworkInfo activeNetwork = presenter.isNetAvailable();
+        if (null != activeNetwork) {
+
+            switch (activeNetwork.getType()){
+                case ConnectivityManager.TYPE_WIFI:Toast.makeText(getApplicationContext(),"wifi encenidido", Toast.LENGTH_SHORT).show();
+                    tvNetwork.setVisibility(View.GONE);
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                    tvNetwork.setVisibility(View.GONE);
+                    break;
+            }
+        }else {
+            tvNetwork.setVisibility(View.VISIBLE);
+            Toast.makeText(getApplicationContext(),"internet apagado", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,36 +104,85 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
+        //desplaza para abajo para actualizar, reemplaza boton actualizar
+        swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
+        swipe.setOnRefreshListener(() -> {
+
+
+//        final MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
+//        fragment.hacerConsultaLineas();
+            presenter.makeConsultaLineas();
+
+            dialogCargandoLineas = new ProgressDialog( ParadasCercanasActivity.this );
+            dialogCargandoLineas.setMessage( "Cargando listado de lineas" );
+            dialogCargandoLineas.show();
+
+            final Handler handler2 = new Handler();
+            final Runnable r2 = new Runnable(){
+                public void run() {
+                    swipe.setRefreshing(false);
+                    dialogCargandoLineas.cancel();
+//                List<String> opciones = fragment.getOpciones();
+                    Set<String> hs = new HashSet<String>();
+                    hs.addAll(getLineasDisponibles());
+                    adapter.clear();
+                    for(String opcion: hs){
+                        adapter.add(opcion);
+                    }
+                    itemSeleccionLinea.setAdapter(adapter);
+
+                    if(adapter.isEmpty()) {
+                        Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
+                    }else{
+                        btnEncontrarUbicacion.setEnabled( true );
+                    }
+                }
+            };
+            handler2.postDelayed(r2,5000);
+        });
     }
 
     private void inicializarElementos() {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
         itemSeleccionLinea = (Spinner) findViewById(R.id.itemSeleccionLinea);
         tvUbicacion = (TextView) findViewById(R.id.tvUbicacion);
-        tvRadio = (TextView) findViewById(R.id.tvRadio);
+        tvRadio = (TextView) findViewById(R.id.tvSeleccionRadio);
         itemSeleccionRadio = (Spinner) findViewById(R.id.spinner);
         btnObtenerUbicacion = (Button) findViewById(R.id.btnObtenerUbicacion);
         btnEncontrarUbicacion = (Button) findViewById(R.id.btnBuscarParadas);
         btnEncontrarUbicacion.setEnabled(false);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
-        setearLatitud("0");
-        tvDisponibilidadRed = (TextView) findViewById(R.id.tv_net);
-        tvDisponibilidadInternet = (TextView) findViewById(R.id.tv_access);
+//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+//        progressBar.setVisibility(View.GONE);
+//        tvDisponibilidadRed = (TextView) findViewById(R.id.tv_net);
+//        tvDisponibilidadInternet = (TextView) findViewById(R.id.tv_access);
+        setLatitud("0");
+        lineasDisponibles = new ArrayList<>();
+        tvNetwork = (TextView)findViewById(R.id.tv_network);
 
-        boolean redHabilitada = isOnlineNet();
-        if (redHabilitada) {
-            tvDisponibilidadRed.setText("Red habilitada");
-        } else {
-            tvDisponibilidadRed.setText("Red deshabilitada");
-        }
+        //necesario para comprobar internet en tiempo real
+        IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mBroadcastReceiver,intentFilter);
+        //
 
-        boolean accesoInternet = isNetDisponible();
-        if (accesoInternet) {
-            tvDisponibilidadInternet.setText("Conectado a internet");
-        } else {
-            tvDisponibilidadInternet.setText("Sin conexion a internet");
-        }
+
+
+//        boolean redHabilitada = presenter.isOnlineNet();
+//        boolean redHabilitada = isOnlineNet();
+//        if (presenter.isOnlineNet()) {
+//            tvDisponibilidadRed.setText("Red habilitada");
+//        } else {
+//            tvDisponibilidadRed.setText("Red deshabilitada");
+//        }
+//
+////        boolean accesoInternet = presenter.isNetDisponible();
+////        boolean accesoInternet = isNetDisponible();
+//        if (presenter.isNetDisponible()) {
+//            tvDisponibilidadInternet.setText("Conectado a internet");
+//        } else {
+//            tvDisponibilidadInternet.setText("Sin conexion a internet");
+//        }
     }
 
     private void obtenerParadasCercanas() throws InterruptedException {
@@ -121,7 +200,8 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
                 System.out.println("----------------------se esta obteniendo la ubicacion----------------------------------");
                 //TODO pasar a model
-                obtenerUbicacionPasajero();
+//                obtenerUbicacionPasajero();
+                presenter.obtenerUbicacionPasajero();
 
 
                 final Handler handler = new Handler();
@@ -129,7 +209,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                     public void run() {
                         dialogBuscandoUbicacion.cancel();
 
-                        if (obtenerLatitutd().equals("0")) {
+                        if (getLatitutd().equals("0")) {
                             Toast toast1 = Toast.makeText(getApplicationContext(), "No se pudo obtener su ubicación actual", Toast.LENGTH_LONG);
                             toast1.show();
                         } else {
@@ -151,7 +231,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
 
                                     try {
-                                        if (listaParadas.size() == 0) {
+                                        if (listaParadasExistentes.size() == 0) {
 
                                             System.out.println("----------------------no se pudo cargar la lista de paradas----------------------------------");
                                             dialogBuscandoParadas.cancel();
@@ -164,7 +244,12 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                                         System.out.println("----------------------se obtuvieron todas las paradas----------------------------------");
                                         System.out.println("----------------------se esta obteniendo las paradas mas cercanas----------------------------------");
                                         //TODO pasar a model
-                                        listaParadasCercanas = obtenerListaParadasCercanas(listaParadas);
+                                        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
+//
+                                        //cambiar este return, deberia llamarse desde el presenter, showListaParadasCercanas
+//                                        listaParadasCercanas = presenter.getListaParadasCercanas(listaParadasExistentes, eleccionRadioParadas, getLatitutd(), getLongitud());
+
+                                        presenter.getListaParadasCercanas(listaParadasExistentes, eleccionRadioParadas, getLatitutd(), getLongitud());
 
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
@@ -190,8 +275,8 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                                             dialogBuscandoParadas.cancel();
                                             Intent intent = new Intent(ParadasCercanasActivity.this, MapsActivity.class);
                                             intent.putParcelableArrayListExtra("key", (ArrayList<? extends Parcelable>) listaParadasCercanas);
-                                            intent.putExtra("lat", obtenerLatitutd());
-                                            intent.putExtra("lng", obtenerLongitud());
+                                            intent.putExtra("lat", getLatitutd());
+                                            intent.putExtra("lng", getLongitud());
                                             intent.putExtra("radio", eleccionRadioParadas);
 
                                             startActivity(intent);
@@ -215,171 +300,20 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         });
     }
 
-    //TODO pasar a model
-    private List<ParadaCercana> obtenerListaParadasCercanas(List<ParadaCercana> paradas) throws InterruptedException {
+    public String getLatitutd(){return this.miLatitud; }
 
-        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
-//        obtenerRadio();
-        List<ParadaCercana> listaFinalParadasCercanas = new ArrayList<ParadaCercana>();
-        Double radioD = Double.parseDouble(eleccionRadioParadas);
-
-        //Todo: esto esta andando? probar con println
-        if (paradas.size() == 0) {
-            Hilo hilo = new Hilo();
-            hilo.run();
-        }
-
-        for (ParadaCercana item : paradas) {
-
-            Double distancia = obtenerDistancia(Double.parseDouble(obtenerLatitutd()), Double.parseDouble(obtenerLongitud()), item.getLatitud(), item.getLongitud());
-
-            if (distancia < radioD) {
-                System.out.println("---------------- Distancia: " + distancia + " Radio: " + radioD + "---------------");
-                ParadaCercana paradaCercana = new ParadaCercana();
-                paradaCercana.setLatitud(item.getLatitud());
-                paradaCercana.setLongitud(item.getLongitud());
-                paradaCercana.setDireccion(item.getDireccion());
-                paradaCercana.setLineaDenom(item.getLineaDenom());
-                paradaCercana.setDistancia(String.valueOf(distancia));
-                listaFinalParadasCercanas.add(paradaCercana);
-            }
-        }
-
-        return listaFinalParadasCercanas;
-    }
-
-    // Metodo que se utiliza para obtener la distancia entre dos ubicaciones geograficas
-    public Double obtenerDistancia(double lat1, double lng1, double lat2, double lng2) {
-        double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double dist = (double) (earthRadius * c);
-
-        return Math.round(dist * 100) / 100d; // para rendondear el resultado
-    }
-
-    public void obtenerUbicacionPasajero() {
-
-        LocationManager locationManager = (LocationManager) ParadasCercanasActivity.this.getSystemService(Context.LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                tvUbicacion.setText(location.getLatitude() + "" + location.getLongitude());
-                setearLatitud(String.valueOf(location.getLatitude()));
-                setearLongitud(String.valueOf(location.getLongitude()));
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-
-    }
-
-    public String obtenerLatitutd(){return this.miLatitud; }
-
-    public String obtenerLongitud(){
+    public String getLongitud(){
         return this.miLongitud;
     }
 
-    public void setearLatitud(String lat){
+    public void setLatitud(String lat){
         this.miLatitud = lat;
     }
 
-    public void setearLongitud(String lng){
+    public void setLongitud(String lng){
         this.miLongitud = lng;
     }
 
-    //TODO pasar a model
-    public void actualizarInformacion(View view) {
-
-        boolean redHab = isOnlineNet();
-        if(redHab) {
-            tvDisponibilidadRed.setText( "Red habilitada" );
-        }else{
-            tvDisponibilidadRed.setText( "Red deshabilitada" );
-        }
-
-        boolean accesoInter = isNetDisponible();
-        if(accesoInter) {
-            tvDisponibilidadInternet.setText( "Conectado a internet" );
-        }else{
-            tvDisponibilidadInternet.setText("Sin conexion a internet");
-        }
-
-        final MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
-        fragment.hacerConsultaLineas();
-        dialogCargandoLineas = new ProgressDialog( ParadasCercanasActivity.this );
-        dialogCargandoLineas.setMessage( "Cargando listado de lineas" );
-        dialogCargandoLineas.show();
-
-        final Handler handler2 = new Handler();
-        final Runnable r2 = new Runnable(){
-            public void run() {
-                dialogCargandoLineas.cancel();
-                List<String> opciones = fragment.getOpciones();
-                Set<String> hs = new HashSet<String>();
-                hs.addAll(opciones);
-                adapter.clear();
-                for(String opcion: hs){
-                    adapter.add(opcion);
-                }
-                itemSeleccionLinea.setAdapter(adapter);
-
-                if(adapter.isEmpty()) {
-                    Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
-                }else{
-                    btnEncontrarUbicacion.setEnabled( true );
-                }
-            }
-        };
-        handler2.postDelayed(r2,5000);
-    }
-
-    // red habilitada
-    public boolean isNetDisponible(){
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo actNetInfo = connectivityManager.getActiveNetworkInfo();
-        return (actNetInfo != null && actNetInfo.isConnected());
-    }
-
-    // si hay acceso a internet
-    public Boolean isOnlineNet(){
-
-        Process p = null;
-        try {
-            p = Runtime.getRuntime().exec("ping -c 1 www.google.es");
-            int val = p.waitFor();
-            boolean reachable = (val == 0);
-            return reachable;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     //metodo para mostrar resultados desde el model, si no lo necesito lo borro
     @Override
@@ -387,27 +321,41 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
     }
 
-    class Hilo extends Thread{
-        public void run(){
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    public void showUbicacionPasajero(String latitudeStr, String longitudeStr) {
+        tvUbicacion.setText(latitudeStr + " " + longitudeStr);
+        setLatitud(latitudeStr);
+        setLongitud(longitudeStr);
     }
+
+    @Override
+    public void showLineasDisponibles(List<String> lineasDisponibles) {
+        this.lineasDisponibles = lineasDisponibles;
+    }
+
+    @Override
+    public void showResponseError(String error) {
+        Toast.makeText( ParadasCercanasActivity.this,error, Toast.LENGTH_SHORT ).show();
+    }
+
+    @Override
+    public void showParadasCecanas(List<ParadaCercana> listaFinalParadasCercanas) {
+        this.listaParadasCercanas = listaFinalParadasCercanas;
+    }
+
+
 
     // estos dos metodos se pueden unir
     private void obtenerTodasParadas() {
-        listaParadas = new ArrayList<ParadaCercana>();
-        listaParadas = obtenerParadasDesdeServidor();
+        listaParadasExistentes = new ArrayList<ParadaCercana>();
+        listaParadasExistentes = obtenerParadasDesdeServidor();
 
         Boolean bandera = true;
         long cont = 0;
 
         //esto se puede mejorar
         while(bandera && cont < 20000000) {
-            if (listaParadas.size() != 0) {
+            if (listaParadasExistentes.size() != 0) {
                 bandera = false;
 
             }
@@ -420,8 +368,14 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
 //        obtenerRadio();
         MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
-        List<ParadaCercana> listaTodasParadas = fragment.hacerConsultaParadasRecorrido(seleccionLinea);
+//        List<ParadaCercana> listaTodasParadas = fragment.hacerConsultaParadasRecorrido(seleccionLinea);
+        List<ParadaCercana> listaTodasParadas = presenter.hacerConsultaParadasRecorrido(seleccionLinea);
         return listaTodasParadas;
     }
+
+    public List<String> getLineasDisponibles() {
+        return this.lineasDisponibles;
+    }
+
 
 }

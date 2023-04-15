@@ -1,4 +1,4 @@
-package com.example.lucianodsepulveda.apppasajero.utilities;
+package com.example.lucianodsepulveda.apppasajero.model;
 
 import android.content.Context;
 

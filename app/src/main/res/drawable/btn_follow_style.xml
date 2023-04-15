@@ -4,4 +4,11 @@
     <solid android:color="#fff"/>
     <corners android:radius="30dp"/>
 
+<!--    <stroke android:width="3sp"-->
+<!--        android:color="@color/colorItem1"/>-->
+<!--    <padding android:bottom="10sp"-->
+<!--        android:left="10sp"-->
+<!--        android:right="10sp"-->
+<!--        android:top="10sp"/>-->
+
 </shape>

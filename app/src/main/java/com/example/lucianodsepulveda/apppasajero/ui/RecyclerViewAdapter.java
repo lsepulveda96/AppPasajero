@@ -1,6 +1,4 @@
-package com.example.lucianodsepulveda.apppasajero.utilities;
-
-import static android.content.ContentValues.TAG;
+package com.example.lucianodsepulveda.apppasajero.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,28 +13,29 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.lucianodsepulveda.apppasajero.ui.ParadasFavoritasActivity;
-import com.example.lucianodsepulveda.apppasajero.ui.MainFragment;
 import com.example.lucianodsepulveda.apppasajero.R;
+import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
+import com.example.lucianodsepulveda.apppasajero.model.Parada;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import static android.content.ContentValues.TAG;
+
 class RecyclerViewHolder extends RecyclerView.ViewHolder{
 
     public TextView txtCodigo;
 
-
-    public RecyclerViewHolder(View itemView) {
+        public RecyclerViewHolder(View itemView) {
         super(itemView);
         txtCodigo = (TextView) itemView.findViewById(R.id.txtCodigo);
     }
 }
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>  implements ScannerQRCodeInterface.View {
 
     public ParadasFavoritasActivity ma;
     public MainFragment mf;
@@ -55,11 +54,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private final ParadasFavoritasActivity ma2;
         private String mItem;
         private TextView txtCodigo;
-        private String respuesta = "";
+        private String responseArriboColectivo = "";
         private String idLineaQr;
         private String idParadaQr;
         SharedPreferences preferences;
         ProgressDialog dialog2;
+        ScannerQRCodeInterface.Presenter presenter;
 
 
         public ViewHolder(View itemView, ParadasFavoritasActivity ma, MainFragment mf2) {
@@ -100,7 +100,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
 
-            respuesta = mf.makeRequestLlegadaCole( idLineaQr,idParadaQr );
+            responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr,idParadaQr);
+//            respuesta = mf.makeRequestLlegadaCole( idLineaQr,idParadaQr );
+
 
             dialog2 = new ProgressDialog( ma2 );
             dialog2.setMessage( "Buscando el proximo colectivo.." );
@@ -115,7 +117,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                     dialog2.cancel();
                     String resp1 = "";
-                    resp1 = mf.getRespuesta().replaceAll( "\"","" );
+                    resp1 = getResponseArriboColectivo().replaceAll( "\"","" );
+//                    resp1 = mf.getRespuesta().replaceAll( "\"","" );
 
                     if(resp1.equals("")) {
                         Toast t2 = Toast.makeText( ma2, "No es posible realizar la consulta", Toast.LENGTH_SHORT );
@@ -134,6 +137,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         private void crearDialogo(int position, String mItem) {
         }
+
+        public String getResponseArriboColectivo(){
+            return this.responseArriboColectivo;
+        }
+
     }
 
     @Override
@@ -153,4 +161,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return listData.size();
     }
+
+
 }

@@ -2,10 +2,14 @@ package com.example.lucianodsepulveda.apppasajero.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,22 +18,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lucianodsepulveda.apppasajero.R;
+import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
+import com.example.lucianodsepulveda.apppasajero.model.Parada;
+import com.example.lucianodsepulveda.apppasajero.presenter.ParadasFavoritasPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.example.lucianodsepulveda.apppasajero.R;
-import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
-import com.example.lucianodsepulveda.apppasajero.presenter.ParadasFavoritasPresenter;
-import com.example.lucianodsepulveda.apppasajero.utilities.Parada;
-import com.example.lucianodsepulveda.apppasajero.utilities.RecyclerViewAdapter;
-import com.example.lucianodsepulveda.apppasajero.utilities.ScannerQRCodeActivity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ParadasFavoritasActivity extends FragmentActivity implements View.OnClickListener, ParadasFavoritasInterface.View {
 
@@ -43,13 +45,41 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor sharedPreferencesEditor;
     SwipeRefreshLayout swipeRefreshLayout;
-    TextView tvNet;
-    TextView tvAccess;
+    TextView tvNet, tvAccess, tvNetwork;
 
     List<Parada> listaParadas = new ArrayList<Parada>();
 
     //para interface
     ParadasFavoritasInterface.Presenter presenter;
+    //necesario para comprobar internet en tiempo real
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            checkStatus();
+        }
+    };
+
+    //necesario para comprobar internet en tiempo real
+    private void checkStatus(){
+
+
+        NetworkInfo activeNetwork = presenter.isNetAvailable();
+        if (null != activeNetwork) {
+
+            switch (activeNetwork.getType()){
+                case ConnectivityManager.TYPE_WIFI:Toast.makeText(getApplicationContext(),"wifi encenidido", Toast.LENGTH_SHORT).show();
+                    tvNetwork.setVisibility(View.GONE);
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                    tvNetwork.setVisibility(View.GONE);
+                    break;
+            }
+        }else {
+            tvNetwork.setVisibility(View.VISIBLE);
+            Toast.makeText(getApplicationContext(),"internet apagado", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,19 +99,6 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
         tvNet = (TextView)findViewById(R.id.tv_net);
         tvAccess = (TextView)findViewById(R.id.tv_access);
 
-        // Consulta la disponiblidad de la red
-        if(presenter.isOnlineNet()) {
-            tvNet.setText( "Conectado a internet" );
-        }else{
-            tvNet.setText( "Sin conexion a internet" );
-        }
-
-        // Consulta la disponiblidad de la red
-        if(presenter.isNetAvailable()) {
-            tvAccess.setText( "Red habilitada" );
-        }else{
-            tvAccess.setText("Red deshabilitada");
-        }
 
         //idea -- List<Parada> listaParadas = getListaParadas();
         sharedPreferences = getApplicationContext().getSharedPreferences("Codigos", Context.MODE_PRIVATE);
@@ -151,6 +168,11 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         listaParadasAdapter.setAdapter(arrayAdapter);
+
+        //necesario para comprobar internet en tiempo real
+        IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mBroadcastReceiver,intentFilter);
+        //
     }
 
 

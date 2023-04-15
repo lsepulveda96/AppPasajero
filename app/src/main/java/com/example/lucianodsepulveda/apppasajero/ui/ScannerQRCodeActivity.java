@@ -1,4 +1,4 @@
-package com.example.lucianodsepulveda.apppasajero.utilities;
+package com.example.lucianodsepulveda.apppasajero.ui;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -19,12 +19,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
-import com.example.lucianodsepulveda.apppasajero.ui.ParadasFavoritasActivity;
-import com.example.lucianodsepulveda.apppasajero.ui.MainFragment;
 import com.example.lucianodsepulveda.apppasajero.R;
+import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
+import com.example.lucianodsepulveda.apppasajero.presenter.ScannerQRCodePresenter;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -33,7 +30,10 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 import java.util.Map;
 
-public class ScannerQRCodeActivity extends FragmentActivity {
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+
+public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQRCodeInterface.View {
 
     // cambiar nombre variables
     private SurfaceView surfaceView;
@@ -41,25 +41,20 @@ public class ScannerQRCodeActivity extends FragmentActivity {
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private Button btnFav;
-    private String intentData = "";
+    private Button btnFav,btnAtras ;
     private boolean isEmail = false;
-    private String dataC;
-    private Button btnAtras;
+    private String dataC, idLineaQr, idParadaQr, denomQr, direccionQr, responseArriboColectivo = "", intentData = "";
     private int control;
-    private String idLineaQr;
-    private String idParadaQr;
-    private String denomQr;
-    private String direccionQr;
-    private String respuesta = "";
     private ProgressDialog dialog2;
+
+    ScannerQRCodeInterface.Presenter presenter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
-
+        presenter = new ScannerQRCodePresenter(this, this);
         initViews();
     }
 
@@ -199,8 +194,8 @@ public class ScannerQRCodeActivity extends FragmentActivity {
                                     final String codShow = denomQr + " - "  + direccionQr;
                                     txtBarcodeValue.setText(codShow);
 
-                                    final MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
-                                    respuesta = fragment.makeRequestLlegadaCole( idLineaQr,idParadaQr );
+                                    responseArriboColectivo = presenter.makeRequestLlegadaCole( idLineaQr,idParadaQr );
+
                                     dialog2 = new ProgressDialog( ScannerQRCodeActivity.this );
                                     dialog2.setTitle( "Codigo detectado" );
                                     dialog2.setMessage( "Leyendo información.." );
@@ -213,7 +208,7 @@ public class ScannerQRCodeActivity extends FragmentActivity {
 
                                             dialog2.cancel();
                                             String resp1 = "";
-                                            resp1 = fragment.getRespuesta().replaceAll( "\"","" );
+                                            resp1 = getResponseArriboColectivo().replaceAll( "\"","" );
 
                                             if(resp1.equals("")) {
                                                 Toast t2 = Toast.makeText( getApplicationContext(), "No es posible realizar la consulta", Toast.LENGTH_SHORT );
@@ -229,17 +224,17 @@ public class ScannerQRCodeActivity extends FragmentActivity {
 
                                                         //TODO reemplaza boton fav
                                                         SharedPreferences preferences = getApplicationContext().getSharedPreferences( "Codigos", Context.MODE_PRIVATE );
-                                                        boolean bandera = true;
+                                                        boolean codigoNoExiste = true;
 
                                                         Map<String, ?> allEntries = preferences.getAll();
                                                         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                                                             if (codShow.equals( entry.getKey() )) {
-                                                                bandera = false;
+                                                                codigoNoExiste = false;
                                                             }
                                                         }
 
                                                         // porque no habia otro codigo igual
-                                                        if (bandera) {
+                                                        if (codigoNoExiste) {
                                                             SharedPreferences.Editor myEditor = preferences.edit();
                                                             myEditor.putString( codShow, getData() );
                                                             myEditor.commit();
@@ -299,6 +294,10 @@ public class ScannerQRCodeActivity extends FragmentActivity {
 
     public String getData(){
         return this.dataC;
+    }
+
+    public String getResponseArriboColectivo(){
+        return this.responseArriboColectivo;
     }
 
 }

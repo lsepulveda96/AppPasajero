@@ -23,10 +23,14 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+        android:supportsRtl="true">
+<!--        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">-->
         <activity android:name="com.example.lucianodsepulveda.apppasajero.ui.MainActivity"
+
+            android:label="Pantalla principal"
+            android:screenOrientation="portrait"
             android:exported="true"> <!-- si no anda, cambiar package y aca agregar la ruta relativa -->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,6 +47,9 @@
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.MapsActivity"
@@ -52,7 +59,9 @@
             android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity"
             android:label="AppPasajero"></activity>
 
-        <activity android:name="com.example.lucianodsepulveda.apppasajero.utilities.ScannerQRCodeActivity" />
+
+
+        <activity android:name="com.example.lucianodsepulveda.apppasajero.ui.ScannerQRCodeActivity" />
         <activity android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasFavoritasActivity" />
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>

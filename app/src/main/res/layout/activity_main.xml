@@ -1,94 +1,136 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     tools:ignore="ContentDescrpition"
     tools:context="com.example.lucianodsepulveda.apppasajero.ui.MainActivity">
+  <!--    android:background="@drawable/second_gradient_color"-->
+  <!--    android:background="#ffffff"-->
 
+  <!--  android:text="Activity ParadasCercanas"-->
+<!--  android:background="@drawable/fondo_btn1"-->
 
-
-
+  <!--  android:text="Activity ScannerQR"-->
 
   <Button
       android:id="@+id/btnParadasCercanas"
-      android:layout_width="324dp"
-      android:layout_height="102dp"
+      android:layout_width="390dp"
+      android:layout_height="123dp"
       android:layout_alignParentStart="true"
-      android:layout_alignParentTop="true"
-      android:layout_marginStart="44dp"
-      android:layout_marginTop="316dp"
-      android:text="Activity ParadasCercanas"
       android:layout_alignParentLeft="true"
-      android:layout_marginLeft="44dp" />
-
+      android:layout_alignParentTop="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginStart="9dp"
+      android:layout_marginLeft="9dp"
+      android:layout_marginTop="316dp"
+      android:layout_marginEnd="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_marginBottom="3dp"
+      android:background="@drawable/paradas_cercanas_btn_style" />
 
   <Button
       android:id="@+id/btnScannerQR"
-      android:layout_width="324dp"
-      android:layout_height="100dp"
+      android:layout_width="390dp"
+      android:layout_height="123dp"
+      android:layout_above="@+id/btnFavoritos"
+      android:layout_below="@+id/btnParadasCercanas"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
       android:layout_alignParentEnd="true"
-      android:layout_alignParentBottom="true"
-      android:layout_marginEnd="45dp"
-      android:layout_marginBottom="181dp"
-      android:text="Activity ScannerQR"
       android:layout_alignParentRight="true"
-      android:layout_marginRight="45dp" />
+      android:layout_marginStart="9dp"
+      android:layout_marginLeft="9dp"
+      android:layout_marginTop="9dp"
+      android:layout_marginEnd="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_marginBottom="9dp"
+      android:background="@drawable/scanner_qr_btn_style" />
 
   <Button
       android:id="@+id/btnFavoritos"
-      android:layout_width="326dp"
-      android:layout_height="102dp"
+      android:layout_width="390dp"
+      android:layout_height="123dp"
       android:layout_alignParentStart="true"
-      android:layout_alignParentTop="true"
-      android:layout_marginStart="34dp"
-      android:layout_marginTop="586dp"
-      android:text="Activity Favoritos"
-      android:layout_marginLeft="34dp"
-      android:layout_alignParentLeft="true" />
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentBottom="true"
+      android:layout_marginStart="9dp"
+      android:layout_marginLeft="9dp"
+      android:layout_marginEnd="10dp"
+      android:layout_marginRight="10dp"
+      android:layout_marginBottom="36dp"
+      android:background="@drawable/favoritos_btn_style"
+      android:focusable="auto"
+      android:focusableInTouchMode="false"
+      android:selectAllOnFocus="false" />
+  <!--  android:text="Activity Favoritos"-->
+
 
   <ImageView
       android:id="@+id/imgFondo"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:scaleType="centerCrop"
+      android:src="@drawable/img_fondo_limpio" />
+
+  <ImageView
+      android:id="@+id/imgIcono"
+      android:layout_width="130dp"
+      android:layout_height="130dp"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
       android:layout_alignParentTop="true"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="-1dp"
-      android:src="@drawable/homerentalapp4" />
-
-
-  <Button
-      android:id="@+id/BtnMVP"
-      android:onClick="calcular"
-      android:layout_width="142dp"
-      android:layout_height="wrap_content"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentLeft="true"
-      android:layout_marginTop="10dp"
-      android:text="Calcular" />
-
-
-  <EditText
-      android:id="@+id/EditTextMVP"
-      android:layout_width="154dp"
-      android:layout_height="wrap_content"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentLeft="true"
-      android:layout_marginTop="68dp"
-      android:hint="escriba algo"/>
-
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginStart="140dp"
+      android:layout_marginLeft="140dp"
+      android:layout_marginTop="17dp"
+      android:layout_marginEnd="140dp"
+      android:layout_marginRight="138dp"
+      android:src="@drawable/logo_stcu" />
 
   <TextView
-      android:id="@+id/TextViewMVP"
-      android:layout_width="125dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_below="@+id/imgIcono"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
-      android:layout_marginTop="135dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginStart="91dp"
+      android:layout_marginLeft="91dp"
+      android:layout_marginTop="5dp"
+      android:layout_marginEnd="88dp"
+      android:layout_marginRight="88dp"
+      android:fontFamily="@font/alata"
+      android:text="STCU"
       android:textColor="@color/colorPrimary"
-      android:hint="esperando.."/>
+      android:textSize="50dp" />
+
+  <TextView
+      android:layout_width="108dp"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/imgIcono"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_marginStart="215dp"
+      android:layout_marginLeft="215dp"
+      android:layout_marginTop="5dp"
+      android:layout_marginEnd="88dp"
+      android:layout_marginRight="88dp"
+      android:fontFamily="@font/alata"
+      android:text="APP"
+      android:textColor="@color/colorLogo"
+      android:textSize="50dp" />
+
+  <!--  android:src="@drawable/img_fondo_limpio"-->
+<!--      android:src="@drawable/homerentalapp4" />-->
+
 
 </RelativeLayout>
 

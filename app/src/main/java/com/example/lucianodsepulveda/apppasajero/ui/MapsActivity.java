@@ -12,8 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.lucianodsepulveda.apppasajero.R;
-import com.example.lucianodsepulveda.apppasajero.ui.MainFragment;
-import com.example.lucianodsepulveda.apppasajero.utilities.ParadaCercana;
+import com.example.lucianodsepulveda.apppasajero.model.ParadaCercana;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;

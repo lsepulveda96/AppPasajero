@@ -1,21 +1,25 @@
 package com.example.lucianodsepulveda.apppasajero.presenter;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
-import com.example.lucianodsepulveda.apppasajero.utilities.ParadasFavoritasModel;
+import com.example.lucianodsepulveda.apppasajero.model.ParadasFavoritasInteractor;
 
 public class ParadasFavoritasPresenter implements ParadasFavoritasInterface.Presenter {
     //esta en contacto con el modelo y con la vista
     //interface
     private ParadasFavoritasInterface.View view;
     //model
-    private ParadasFavoritasInterface.Model model;
+    //private ParadasFavoritasInterface.Model model;
+    private ParadasFavoritasInterface.Interactor interactor;
 
     public ParadasFavoritasPresenter(ParadasFavoritasInterface.View view, Context mContext){
         this.view = view;
         //nuevo model
-        model = new ParadasFavoritasModel(this, mContext);
+        //model = new ParadasFavoritasModel(this, mContext);
+
+        interactor = new ParadasFavoritasInteractor(this, mContext);
     }
 
 
@@ -30,26 +34,9 @@ public class ParadasFavoritasPresenter implements ParadasFavoritasInterface.Pres
     }
 
     @Override
-    //TODO 2 -luego llama a este metodo, y le pide al model el dato que necesita
-    public boolean isNetAvailable() {
-        boolean result = false;
-
-        //este es cuando envia el dato que necesita
-        if(view != null){
-            result = model.isNetAvailable();
-        }
-        return result;
+    public NetworkInfo isNetAvailable() {
+        return interactor.isNetAvailable();
     }
 
-    @Override
-    public boolean isOnlineNet() {
-        boolean result = false;
-
-        //este es cuando envia el dato que necesita
-        if(view != null){
-            result = model.isOnlineNet();
-        }
-        return result;
-    }
 
 }
