@@ -17,10 +17,9 @@ import java.util.List;
 public class ParadasCercanasPresenter implements ParadasCercanasInterface.Presenter {
 
     //interface
-    private ParadasCercanasInterface.View view;
-    //model
-//    private ParadasCercanasInterface.Model model;
-    private ParadasCercanasInterface.Interactor interactor;
+    private final ParadasCercanasInterface.View view;
+
+    private final ParadasCercanasInterface.Interactor interactor;
 
     public ParadasCercanasPresenter(ParadasCercanasInterface.View view, Context mContext, Activity mActivity){
         this.view = view;
@@ -143,14 +142,10 @@ public class ParadasCercanasPresenter implements ParadasCercanasInterface.Presen
     }
 
     @Override
-//    public List<ParadaCercana> obtenerListaParadasCercanas(List<ParadaCercana> listaParadasExistentes, String eleccionRadioParadas, String latitudStr, String longitudStr) throws InterruptedException {
     public void getListaParadasCercanas(List<ParadaCercana> listaParadasExistentes, String eleccionRadioParadas, String latitudStr, String longitudStr) throws InterruptedException {
-//    List<ParadaCercana> listaParadasCercanas = new ArrayList<>();
         if(view != null){
-//            listaParadasCercanas = interactor.obtenerListaParadasCercanas(listaParadasExistentes,eleccionRadioParadas,latitudStr,longitudStr);
             interactor.getListaParadasCercanasApi(listaParadasExistentes,eleccionRadioParadas,latitudStr,longitudStr);
         }
-//        return listaParadasCercanas;
     }
 
     @Override

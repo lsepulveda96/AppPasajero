@@ -5,7 +5,7 @@ import android.net.NetworkInfo;
 import java.util.List;
 
 /**
- * Clase responsable de los detalles de implementación de la operación CRUD, metodos get, put, post. sabe como conectarse a una db.
+ * Clase responsable de los detalles de implementación de la operación CRUD, metodos get, put, post. sabe como conectarse a una base de datos.
  */
 public interface ParadasCercanasRepository {
     void getParadasCercanasAPI(List<ParadaCercana> listaParadasExistentes, String eleccionRadioParadas, String latitudStr, String longitudStr);

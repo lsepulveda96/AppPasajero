@@ -1,10 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.model;
 
 public class Parada {
-    private String codigo;
-
-    public Parada() {
-    }
+    private final String codigo;
 
     public Parada(String codigo) {
         this.codigo = codigo;
@@ -14,7 +11,4 @@ public class Parada {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
 }

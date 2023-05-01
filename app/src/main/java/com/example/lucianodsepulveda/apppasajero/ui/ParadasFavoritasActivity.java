@@ -18,6 +18,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
 import com.example.lucianodsepulveda.apppasajero.model.Parada;
@@ -26,12 +32,6 @@ import com.example.lucianodsepulveda.apppasajero.presenter.ParadasFavoritasPrese
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class ParadasFavoritasActivity extends FragmentActivity implements View.OnClickListener, ParadasFavoritasInterface.View {
 
@@ -96,8 +96,9 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
         listaParadasAdapter = (ListView) findViewById(R.id.lvFav);
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        tvNet = (TextView)findViewById(R.id.tv_net);
-        tvAccess = (TextView)findViewById(R.id.tv_access);
+//        tvNet = (TextView)findViewById(R.id.tv_net);
+//        tvAccess = (TextView)findViewById(R.id.tv_access);
+        tvNetwork = (TextView)findViewById(R.id.tv_network);
 
 
         //idea -- List<Parada> listaParadas = getListaParadas();

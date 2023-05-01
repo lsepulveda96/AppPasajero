@@ -13,6 +13,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,9 +30,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     ParadasCercanasInterface.Presenter presenter;
@@ -49,7 +49,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
     @Override
     public void getParadasCercanasAPI(List<ParadaCercana> listaParadasExistentes, String eleccionRadioParadas, String latitudStr, String longitudStr) {
-        List<ParadaCercana> listaFinalParadasCercanas = new ArrayList<ParadaCercana>();
+        List<ParadaCercana> listaFinalParadasCercanas = new ArrayList<>();
         Double radioD = Double.parseDouble(eleccionRadioParadas);
 
         for (ParadaCercana item : listaParadasExistentes) {
@@ -78,7 +78,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
                         Math.sin(dLng / 2) * Math.sin(dLng / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double dist = (double) (earthRadius * c);
+        double dist = (earthRadius * c);
 
         return Math.round(dist * 100) / 100d; // para rendondear el resultado
     }
@@ -90,14 +90,19 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
         String eleccionRadioParadas = "500.0";
 
         //"5 cuadras","10 cuadras","20 cuadras","50 cuadras"
-        if (seleccionRadio.equals("5 cuadras")) {
-            eleccionRadioParadas = "500.0";
-        } else if (seleccionRadio.equals("10 cuadras")) {
-            eleccionRadioParadas = "1000.0";
-        } else if (seleccionRadio.equals("20 cuadras")) {
-            eleccionRadioParadas = "2000.0";
-        } else if (seleccionRadio.equals("50 cuadras")) {
-            eleccionRadioParadas = "5000.0";
+        switch (seleccionRadio) {
+            case "5 cuadras":
+                eleccionRadioParadas = "500.0";
+                break;
+            case "10 cuadras":
+                eleccionRadioParadas = "1000.0";
+                break;
+            case "20 cuadras":
+                eleccionRadioParadas = "2000.0";
+                break;
+            case "50 cuadras":
+                eleccionRadioParadas = "5000.0";
+                break;
         }
 
         return eleccionRadioParadas;
@@ -105,7 +110,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
     @Override
     public List<ParadaCercana> makeConsultaParadasRecorridoApi(final String seleccionLin) {
-        listaParadas = new ArrayList<ParadaCercana>();
+        listaParadas = new ArrayList<>();
         String url = ipv4+"/rest/paradasRecorrido/paradasParaApp/"+seleccionLin;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -167,9 +172,8 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     @Override
     public NetworkInfo isNetAvailableLocal() {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        //for airplane mode, networkinfo is null
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        return activeNetwork;
+        //para modo avion, networkinfo es null
+        return connectivityManager.getActiveNetworkInfo();
     }
 
     @Override
@@ -212,7 +216,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
         //TODO: OJO!! capaz necesito esto en todas las llamadas
         requestQueue = Volley.newRequestQueue(mContext);
         String url = ipv4+"/rest/lineas/activas";
-        List<String> lineasDisponibles = new ArrayList<String>();
+        List<String> lineasDisponibles = new ArrayList<>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -225,9 +229,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
                         try{
                             for(int i=0;i<response.length();i++){
                                 JSONObject linea = response.getJSONObject(i);
-                                String id = linea.getString("id");
                                 String denominacion = linea.getString("denominacion");
-                                String enServicio = linea.getString("enServicio");
 
                                 lineasDisponibles.add(denominacion);
                                 presenter.showLineasDisponibles(lineasDisponibles);

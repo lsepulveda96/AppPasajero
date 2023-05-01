@@ -2,10 +2,7 @@ package com.example.lucianodsepulveda.apppasajero.model;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 
 public class BaseVolleyFragment extends Fragment {
@@ -15,8 +12,8 @@ public class BaseVolleyFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        volley = VolleyS.getInstance(getActivity().getApplicationContext());
-        fRequestQueue = volley.getRequestQueue();
+        this.volley = VolleyS.getInstance(getActivity().getApplicationContext());
+        this.fRequestQueue = volley.getRequestQueue();
     }
 
     @Override
@@ -25,31 +22,5 @@ public class BaseVolleyFragment extends Fragment {
         if (fRequestQueue != null) {
             fRequestQueue.cancelAll(this);
         }
-    }
-
-    public void addToQueue(Request request) {
-        if (request != null) {
-            request.setTag(this);
-            if (fRequestQueue == null)
-                fRequestQueue = volley.getRequestQueue();
-            request.setRetryPolicy(new DefaultRetryPolicy(
-                    60000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            ));
-            //onPreStartConnection();
-            fRequestQueue.add(request);
-        }
-    }
-
-    public void onPreStartConnection() {
-        getActivity().setProgressBarIndeterminateVisibility(true);
-    }
-
-    public void onConnectionFinished() {
-        getActivity().setProgressBarIndeterminateVisibility(false);
-    }
-
-    public void onConnectionFailed(String error) {
-        getActivity().setProgressBarIndeterminateVisibility(false);
-        Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
     }
 }

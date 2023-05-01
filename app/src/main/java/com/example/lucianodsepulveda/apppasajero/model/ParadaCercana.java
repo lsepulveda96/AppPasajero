@@ -3,6 +3,9 @@ package com.example.lucianodsepulveda.apppasajero.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Clase que implementa Parcelable para enviar datos entre Activities
+ */
 public class ParadaCercana implements Parcelable {
     private double latitud;
     private double longitud;
@@ -11,11 +14,6 @@ public class ParadaCercana implements Parcelable {
     private String lineaDenom;
 
     public ParadaCercana(){}
-
-    public ParadaCercana( double latitud, double longitud ) {
-        this.latitud = latitud;
-        this.longitud = longitud;
-    }
 
     protected ParadaCercana(Parcel in) {
         latitud = in.readDouble();
