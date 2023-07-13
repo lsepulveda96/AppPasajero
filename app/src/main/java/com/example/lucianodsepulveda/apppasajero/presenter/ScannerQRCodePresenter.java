@@ -1,6 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.presenter;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 
 import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
 import com.example.lucianodsepulveda.apppasajero.model.ScannerQRCodeInteractor;
@@ -28,6 +29,11 @@ public class ScannerQRCodePresenter implements ScannerQRCodeInterface.Presenter 
         }
 
         return respuesta;
+    }
+
+    @Override
+    public NetworkInfo isNetAvailable() {
+        return interactor.isNetAvailable();
     }
 
 

@@ -1,6 +1,8 @@
 package com.example.lucianodsepulveda.apppasajero.model;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -35,5 +37,12 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
         requestQueue.add(getRequest);
         return responseArriboColectivo;
+    }
+
+    @Override
+    public NetworkInfo isNetAvailableLocal() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //para modo avion, networkinfo es null
+        return connectivityManager.getActiveNetworkInfo();
     }
 }

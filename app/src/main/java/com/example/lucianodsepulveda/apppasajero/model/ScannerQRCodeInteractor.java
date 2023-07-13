@@ -1,6 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.model;
 
 import android.content.Context;
+import android.net.NetworkInfo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,4 +18,13 @@ public class ScannerQRCodeInteractor extends AppCompatActivity implements Scanne
     public String makeRequestLlegadaCole(String idLineaQr, String idParadaQr) {
         return scannerQRCodeRepository.makeRequestLlegadaColeApi(idLineaQr, idParadaQr);
     }
+
+    /**
+     * Metodo que consulta la disponibilidad de la red
+     * @return informacion de la red
+     */
+    public NetworkInfo isNetAvailable() {
+        return scannerQRCodeRepository.isNetAvailableLocal();
+    }
+
 }

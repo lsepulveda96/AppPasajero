@@ -1,5 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.interfaces;
 
+import android.net.NetworkInfo;
+
 public interface ScannerQRCodeInterface {
 
     interface View{
@@ -9,6 +11,8 @@ public interface ScannerQRCodeInterface {
 
     interface Presenter{
         String makeRequestLlegadaCole(String idLineaQr, String idParadaQr);
+
+        NetworkInfo isNetAvailable();
     }
 
    /* interface Model{
@@ -18,6 +22,8 @@ public interface ScannerQRCodeInterface {
 
     interface Interactor{
         String makeRequestLlegadaCole(String idLineaQr, String idParadaQr);
+
+        NetworkInfo isNetAvailable();
     }
 
 }

@@ -4,11 +4,15 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.SparseArray;
@@ -18,6 +22,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
@@ -30,18 +37,14 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 import java.util.Map;
 
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-
 public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQRCodeInterface.View {
 
-    // cambiar nombre variables
     private SurfaceView surfaceView;
-    private TextView txtBarcodeValue;
+    private TextView txtBarcodeValue, tvNetwork;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private Button btnFav,btnAtras ;
+    private Button btnFav, btnAtras;
     private boolean isEmail = false;
     private String dataC, idLineaQr, idParadaQr, denomQr, direccionQr, responseArriboColectivo = "", intentData = "";
     private int control;
@@ -50,15 +53,68 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
     ScannerQRCodeInterface.Presenter presenter;
 
 
+    //necesario para comprobar internet en tiempo real
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                checkStatus();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    };
+
+    //necesario para comprobar internet en tiempo real
+    private void checkStatus() throws IOException {
+
+        try{
+
+
+        NetworkInfo activeNetwork = presenter.isNetAvailable();
+        if (null != activeNetwork) {
+
+            switch (activeNetwork.getType()) {
+                case ConnectivityManager.TYPE_WIFI:
+                    Toast.makeText(getApplicationContext(), "wifi encenidido", Toast.LENGTH_SHORT).show();
+                    tvNetwork.setVisibility(View.GONE);
+
+                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                        cameraSource.start(surfaceView.getHolder());
+                    surfaceView.setVisibility(View.VISIBLE);
+                    break;
+                case ConnectivityManager.TYPE_MOBILE:Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                    tvNetwork.setVisibility(View.GONE);
+
+                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                        cameraSource.start(surfaceView.getHolder());
+                    surfaceView.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }else {
+            tvNetwork.setVisibility(View.VISIBLE);
+            Toast.makeText(getApplicationContext(),"internet apagado, debe conectarse a una red para continuar", Toast.LENGTH_SHORT).show();
+            surfaceView.setVisibility(View.GONE);
+            cameraSource.stop(); // para no permitirle escanear cuando no haya internet
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
         presenter = new ScannerQRCodePresenter(this, this);
         initViews();
+
+
     }
 
     private void initViews() {
+        tvNetwork = (TextView)findViewById(R.id.tv_network);
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
         btnFav = findViewById(R.id.btnFav);
@@ -100,6 +156,12 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
 
             }
         });
+
+
+        //necesario para comprobar internet en tiempo real
+        IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mBroadcastReceiver,intentFilter);
+        //
     }
 
     private void initialiseDetectorsAndSources() {
