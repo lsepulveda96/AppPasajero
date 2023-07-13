@@ -88,6 +88,8 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         }else {
             tvNetwork.setVisibility(View.VISIBLE);
             Toast.makeText(getApplicationContext(),"internet apagado", Toast.LENGTH_SHORT).show();
+            // si no hay internet no permite continuar, ver cuando volver a habilitarlo (cuando este cargada lista de lineas)
+            btnEncontrarUbicacion.setEnabled(false);
         }
     }
 

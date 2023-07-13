@@ -45,10 +45,11 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     private Button btnFav, btnAtras;
-    private boolean isEmail = false;
+    private boolean isEmail = false, scannerIniciado = false;
     private String dataC, idLineaQr, idParadaQr, denomQr, direccionQr, responseArriboColectivo = "", intentData = "";
     private int control;
     private ProgressDialog dialog2;
+
 
     ScannerQRCodeInterface.Presenter presenter;
 
@@ -65,10 +66,9 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
         }
     };
 
+
     //necesario para comprobar internet en tiempo real
     private void checkStatus() throws IOException {
-
-        try{
 
 
         NetworkInfo activeNetwork = presenter.isNetAvailable();
@@ -79,27 +79,35 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                     Toast.makeText(getApplicationContext(), "wifi encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
 
-                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                        cameraSource.start(surfaceView.getHolder());
+//                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+//                        cameraSource.start(surfaceView.getHolder());
+                    //para volver a activar la camara
+                    if(scannerIniciado)
+                        onResume();
                     surfaceView.setVisibility(View.VISIBLE);
                     break;
-                case ConnectivityManager.TYPE_MOBILE:Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                case ConnectivityManager.TYPE_MOBILE:
+                    Toast.makeText(getApplicationContext(), "mobile encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
 
-                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
-                        cameraSource.start(surfaceView.getHolder());
+//                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+//                        cameraSource.start(surfaceView.getHolder());
+                    //para volver a activar la camara
+                    if(scannerIniciado)
+                        onResume();
                     surfaceView.setVisibility(View.VISIBLE);
                     break;
             }
-        }else {
+        } else {
             tvNetwork.setVisibility(View.VISIBLE);
-            Toast.makeText(getApplicationContext(),"internet apagado, debe conectarse a una red para continuar", Toast.LENGTH_SHORT).show();
-            surfaceView.setVisibility(View.GONE);
-            cameraSource.stop(); // para no permitirle escanear cuando no haya internet
+            Toast.makeText(getApplicationContext(), "internet apagado, debe conectarse a una red para continuar", Toast.LENGTH_SHORT).show();
+            surfaceView.setActivated(false);
+//          setVisibility(View.GONE);
+//            cameraSource.stop(); // para no permitirle escanear cuando no haya internet
+            //para pausar camara
+            if(scannerIniciado)
+                onPause();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
     }
 
 
@@ -114,13 +122,13 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
     }
 
     private void initViews() {
-        tvNetwork = (TextView)findViewById(R.id.tv_network);
+        tvNetwork = (TextView) findViewById(R.id.tv_network);
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
         btnFav = findViewById(R.id.btnFav);
         btnAtras = findViewById(R.id.btnAtras);
 
-        btnAtras.setOnClickListener(new View.OnClickListener(){
+        btnAtras.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ParadasFavoritasActivity.class);
@@ -137,20 +145,20 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                 boolean bandera = true;
 
                 Map<String, ?> allEntries = preferences.getAll();
-                for(Map.Entry<String,?> entry : allEntries.entrySet()){
-                    if(getData().equals(entry.getValue().toString())){
+                for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                    if (getData().equals(entry.getValue().toString())) {
                         bandera = false;
                     }
                 }
 
-                if(bandera) {
+                if (bandera) {
                     SharedPreferences.Editor myEditor = preferences.edit();
                     myEditor.putString(getData(), getData()); // para que guarde el mismo valor como clave ( que sea unica );
                     myEditor.commit();
-                    Toast t5 = Toast.makeText(getApplicationContext(),"Guardado con exito!", Toast.LENGTH_SHORT);
+                    Toast t5 = Toast.makeText(getApplicationContext(), "Guardado con exito!", Toast.LENGTH_SHORT);
                     t5.show();
-                }else{
-                    Toast t6 = Toast.makeText(getApplicationContext(),"El codigo ya existe!", Toast.LENGTH_SHORT);
+                } else {
+                    Toast t6 = Toast.makeText(getApplicationContext(), "El codigo ya existe!", Toast.LENGTH_SHORT);
                     t6.show();
                 }
 
@@ -159,12 +167,15 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
 
 
         //necesario para comprobar internet en tiempo real
-        IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mBroadcastReceiver,intentFilter);
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(mBroadcastReceiver, intentFilter);
         //
     }
 
     private void initialiseDetectorsAndSources() {
+
+        //para saber si fue iniciado por primera vez el scanner, para utilizar el onPause de la camara
+        scannerIniciado = true;
 
         Toast.makeText(getApplicationContext(), "Scanner Codigo QR iniciado", Toast.LENGTH_SHORT).show();
         control = 0;
@@ -189,6 +200,13 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                                 String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
 
+//                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA)
+//                            == PackageManager.PERMISSION_DENIED) {
+//                        cameraSource.start(surfaceView.getHolder());
+//                    }else {
+//                        ActivityCompat.requestPermissions(ScannerQRCodeActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+//                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -206,10 +224,11 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
 
 
         //reveer funcion, borrar cosas que se utilizaban en la funcion de ejemplo
+
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
-                Toast.makeText(getApplicationContext(), "Scanner Codigo QR detenido", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "Scanner Codigo QR detenido", Toast.LENGTH_SHORT).show();
             }
 
             @Override
