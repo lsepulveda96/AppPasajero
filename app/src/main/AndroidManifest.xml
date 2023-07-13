@@ -21,13 +21,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icono_app_pasajero"
         android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:roundIcon="@mipmap/icono_app_pasajero_round">
 <!--        android:theme="@android:style/Theme.NoTitleBar.Fullscreen">-->
         <activity android:name="com.example.lucianodsepulveda.apppasajero.ui.MainActivity"
-
-            android:label="Pantalla principal"
+            android:label="App pasajero"
             android:screenOrientation="portrait"
             android:exported="true"> <!-- si no anda, cambiar package y aca agregar la ruta relativa -->
 
@@ -38,11 +38,27 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.example.lucianodsepulveda.apppasajero.ui.MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
+
+        <activity
+            android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity"
+            android:label="@string/title_activity_paradasCercanas"></activity>
+
+
+        <activity
+            android:name="com.example.lucianodsepulveda.apppasajero.ui.ScannerQRCodeActivity"
+            android:label="@string/title_activity_scannerQRCode"></activity>
+
+        <activity
+            android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasFavoritasActivity"
+            android:label="@string/title_activity_paradasFavoritas"></activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBw3_Okyoi4sPieeAIVZqk0TyEikHFk4Ec"/>
            <!-- android:value="@string/google_maps_key" /> -->
-
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
@@ -51,18 +67,7 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name="com.example.lucianodsepulveda.apppasajero.ui.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
 
-        <activity
-            android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity"
-            android:label="AppPasajero"></activity>
-
-
-
-        <activity android:name="com.example.lucianodsepulveda.apppasajero.ui.ScannerQRCodeActivity" />
-        <activity android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasFavoritasActivity" />
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 

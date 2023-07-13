@@ -21,13 +21,6 @@
         android:layout_marginTop="21dp"
         tools:layout="@layout/fragment_main" />
 
-    <!-- <Button
-        android:id="@+id/btnTakePicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/take_barcode_picture" /> -->
 
     <Button
         android:id="@+id/btnScanBarcode"

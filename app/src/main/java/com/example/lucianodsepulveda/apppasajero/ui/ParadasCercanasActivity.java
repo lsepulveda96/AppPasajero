@@ -19,6 +19,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasCercanasInterface;
 import com.example.lucianodsepulveda.apppasajero.model.ParadaCercana;
@@ -30,9 +33,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class ParadasCercanasActivity extends FragmentActivity implements ParadasCercanasInterface.View {
 
@@ -110,9 +110,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
         swipe.setOnRefreshListener(() -> {
 
-
-//        final MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
-//        fragment.hacerConsultaLineas();
             presenter.makeConsultaLineas();
 
             dialogCargandoLineas = new ProgressDialog( ParadasCercanasActivity.this );
@@ -124,7 +121,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                 public void run() {
                     swipe.setRefreshing(false);
                     dialogCargandoLineas.cancel();
-//                List<String> opciones = fragment.getOpciones();
                     Set<String> hs = new HashSet<String>();
                     hs.addAll(getLineasDisponibles());
                     adapter.clear();
@@ -133,10 +129,12 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                     }
                     itemSeleccionLinea.setAdapter(adapter);
 
+                    // si no se pudo cargar las lineas
                     if(adapter.isEmpty()) {
                         Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
                     }else{
                         btnEncontrarUbicacion.setEnabled( true );
+                        itemSeleccionLinea.setEnabled(true);
                     }
                 }
             };
@@ -146,11 +144,16 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
     private void inicializarElementos() {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-        itemSeleccionLinea = (Spinner) findViewById(R.id.itemSeleccionLinea);
+        itemSeleccionLinea = (Spinner) findViewById(R.id.spinnerItemSeleccionLinea);
+        itemSeleccionLinea.setEnabled(false);
+
         tvUbicacion = (TextView) findViewById(R.id.tvUbicacion);
         tvRadio = (TextView) findViewById(R.id.tvSeleccionRadio);
-        itemSeleccionRadio = (Spinner) findViewById(R.id.spinner);
+        itemSeleccionRadio = (Spinner) findViewById(R.id.spinnerItemSeleccionRadio);
+
+        //TODO:quitar!! no se esta usando
         btnObtenerUbicacion = (Button) findViewById(R.id.btnObtenerUbicacion);
+
         btnEncontrarUbicacion = (Button) findViewById(R.id.btnBuscarParadas);
         btnEncontrarUbicacion.setEnabled(false);
 //        progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -188,6 +191,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
     private void obtenerParadasCercanas() throws InterruptedException {
         String[] opciones = {"5 cuadras", "10 cuadras", "20 cuadras", "50 cuadras"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
+        adapter.setDropDownViewResource(R.layout.textview_spinner_selected);
         itemSeleccionRadio.setAdapter(adapter);
         listaParadasCercanas = new ArrayList<ParadaCercana>();
 
@@ -366,9 +370,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
     public List<ParadaCercana> obtenerParadasDesdeServidor(){
         String seleccionLinea = itemSeleccionLinea.getSelectedItem().toString();
         eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
-//        obtenerRadio();
-        MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
-//        List<ParadaCercana> listaTodasParadas = fragment.hacerConsultaParadasRecorrido(seleccionLinea);
         List<ParadaCercana> listaTodasParadas = presenter.hacerConsultaParadasRecorrido(seleccionLinea);
         return listaTodasParadas;
     }

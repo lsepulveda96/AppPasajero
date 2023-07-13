@@ -12,4 +12,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_paradasCercanas">App pasajero - Paradas cercanas</string>
+    <string name="title_activity_scannerQRCode">App pasajero - Scanner QR code</string>
+    <string name="title_activity_paradasFavoritas">App pasajero - Paradas Favoritas</string>
 </resources>
