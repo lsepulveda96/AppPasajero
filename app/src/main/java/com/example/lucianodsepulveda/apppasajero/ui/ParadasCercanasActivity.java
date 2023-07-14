@@ -49,7 +49,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
     private Spinner itemSeleccionRadio, itemSeleccionLinea;
 //    private Spinner itemSeleccionLinea;
     private TextView tvRadio, tvUbicacion, tvDisponibilidadRed, tvDisponibilidadInternet, tvNetwork;
-    private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapterSeleccionLinea;
     private ProgressBar progressBar;
 //    private TextView tvDisponibilidadRed, tvDisponibilidadInternet;
 //    private TextView tvDisponibilidadInternet;
@@ -125,14 +125,14 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                     dialogCargandoLineas.cancel();
                     Set<String> hs = new HashSet<String>();
                     hs.addAll(getLineasDisponibles());
-                    adapter.clear();
+                    adapterSeleccionLinea.clear();
                     for(String opcion: hs){
-                        adapter.add(opcion);
+                        adapterSeleccionLinea.add(opcion);
                     }
-                    itemSeleccionLinea.setAdapter(adapter);
+                    itemSeleccionLinea.setAdapter(adapterSeleccionLinea);
 
                     // si no se pudo cargar las lineas
-                    if(adapter.isEmpty()) {
+                    if(adapterSeleccionLinea.isEmpty()) {
                         Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
                     }else{
                         btnEncontrarUbicacion.setEnabled( true );
@@ -145,7 +145,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
     }
 
     private void inicializarElementos() {
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        adapterSeleccionLinea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
         itemSeleccionLinea = (Spinner) findViewById(R.id.spinnerItemSeleccionLinea);
         itemSeleccionLinea.setEnabled(false);
 
@@ -158,10 +158,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
         btnEncontrarUbicacion = (Button) findViewById(R.id.btnBuscarParadas);
         btnEncontrarUbicacion.setEnabled(false);
-//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//        progressBar.setVisibility(View.GONE);
-//        tvDisponibilidadRed = (TextView) findViewById(R.id.tv_net);
-//        tvDisponibilidadInternet = (TextView) findViewById(R.id.tv_access);
+
         setLatitud("0");
         lineasDisponibles = new ArrayList<>();
         tvNetwork = (TextView)findViewById(R.id.tv_network);
@@ -173,28 +170,50 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
 
 
-//        boolean redHabilitada = presenter.isOnlineNet();
-//        boolean redHabilitada = isOnlineNet();
-//        if (presenter.isOnlineNet()) {
-//            tvDisponibilidadRed.setText("Red habilitada");
-//        } else {
-//            tvDisponibilidadRed.setText("Red deshabilitada");
-//        }
-//
-////        boolean accesoInternet = presenter.isNetDisponible();
-////        boolean accesoInternet = isNetDisponible();
-//        if (presenter.isNetDisponible()) {
-//            tvDisponibilidadInternet.setText("Conectado a internet");
-//        } else {
-//            tvDisponibilidadInternet.setText("Sin conexion a internet");
-//        }
+
+        //puede ir dentro de un metodo, se repite dos veces. Aca y para actualizar
+
+        presenter.makeConsultaLineas();
+
+        dialogCargandoLineas = new ProgressDialog( ParadasCercanasActivity.this );
+        dialogCargandoLineas.setMessage( "Cargando listado de lineas" );
+        dialogCargandoLineas.show();
+
+        final Handler handler2 = new Handler();
+        final Runnable r2 = new Runnable(){
+            public void run() {
+                swipe.setRefreshing(false);
+                dialogCargandoLineas.cancel();
+                Set<String> hs = new HashSet<String>();
+                hs.addAll(getLineasDisponibles());
+                adapterSeleccionLinea.clear();
+                for(String opcion: hs){
+                    adapterSeleccionLinea.add(opcion);
+                }
+                itemSeleccionLinea.setAdapter(adapterSeleccionLinea);
+                adapterSeleccionLinea.setDropDownViewResource(R.layout.textview_spinner_selected);
+
+                // si no se pudo cargar las lineas
+                if(adapterSeleccionLinea.isEmpty()) {
+                    Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
+                }else{
+                    btnEncontrarUbicacion.setEnabled( true );
+                    itemSeleccionLinea.setEnabled(true);
+                }
+            }
+        };
+        handler2.postDelayed(r2,5000);
+
+
+
+
     }
 
     private void obtenerParadasCercanas() throws InterruptedException {
         String[] opciones = {"5 cuadras", "10 cuadras", "20 cuadras", "50 cuadras"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
-        adapter.setDropDownViewResource(R.layout.textview_spinner_selected);
-        itemSeleccionRadio.setAdapter(adapter);
+        ArrayAdapter<String> adapterRadioParadas = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
+        adapterRadioParadas.setDropDownViewResource(R.layout.textview_spinner_selected);
+        itemSeleccionRadio.setAdapter(adapterRadioParadas);
         listaParadasCercanas = new ArrayList<ParadaCercana>();
 
         btnEncontrarUbicacion.setOnClickListener(new View.OnClickListener() {

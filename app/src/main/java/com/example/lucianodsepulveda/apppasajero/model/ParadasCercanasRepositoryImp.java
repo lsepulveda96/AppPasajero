@@ -22,7 +22,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasCercanasInterface;
 
@@ -234,21 +233,18 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("La respuesta del servidor es: " + response.toString());
                         try {
 
+                            JSONArray ja = response.getJSONArray("data"); // get the JSONArray
 
-
-                            String denominacion = response.getString("denominacion");
-
+                            for(int i=0;i<ja.length();i++){
+                                JSONObject linea = ja.getJSONObject(i);
+                                String denominacion = linea.getString("denominacion");
                                 lineasDisponibles.add(denominacion);
-                                presenter.showLineasDisponibles(lineasDisponibles);
+                            }
 
-
-
-
-
-
+//                            return lineas; // return the list
+                            presenter.showLineasDisponibles(lineasDisponibles);
 
 
                         } catch (JSONException e) {
@@ -259,12 +255,11 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("La respuesta del servidor Erorr!! es: " + error.toString());
+                        System.out.println("Respuesta del servidor con error: " + error.toString());
 
                     }
                 });
 
-// Access the RequestQueue through your singleton class.
         requestQueue.add(jsonObjectRequest);
 
 
@@ -287,12 +282,9 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
             }
         });
         requestQueue.add(stringRequest);
-
-
 */
 
         //despues de la prueba, lo que estaba antes
-
       /*List<String> lineasDisponibles = new ArrayList<>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
