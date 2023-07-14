@@ -21,6 +21,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasCercanasInterface;
 
@@ -35,7 +37,12 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     ParadasCercanasInterface.Presenter presenter;
     Context mContext;
     Activity mActivity;
-    public static String ipv4 = "http://stcu.mdn.unp.edu.ar:50002/stcu_app";
+    //public static String ipv4 = "http://stcu.mdn.unp.edu.ar:50002/stcu_app";
+    //public static String ipv4 = "http://localhost:50000/v1/mobile/test";
+
+    //public static String ipv4 = "http://127.0.0.1:50000/v1/mobile/test";
+
+    public static String ipv4 = "http://192.168.0.103:50000/v1/mobile/test";
 
     private List<ParadaCercana> listaParadas;
     private ParadaCercana paradaCercana;
@@ -110,6 +117,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
     @Override
     public List<ParadaCercana> makeConsultaParadasRecorridoApi(final String seleccionLin) {
+        //TODO: hay que cambiar ipv4, y hacer controller del otro lado, para que traiga todas las paradas con respecto a esa linea
         listaParadas = new ArrayList<>();
         String url = ipv4+"/rest/paradasRecorrido/paradasParaApp/"+seleccionLin;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -215,8 +223,77 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     public void makeConsultaLineasApi() {
         //TODO: OJO!! capaz necesito esto en todas las llamadas
         requestQueue = Volley.newRequestQueue(mContext);
-        String url = ipv4+"/rest/lineas/activas";
+        //String url = ipv4+"/rest/lineas/activas";
+
+        String url = ipv4;
+
         List<String> lineasDisponibles = new ArrayList<>();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("La respuesta del servidor es: " + response.toString());
+                        try {
+
+
+
+                            String denominacion = response.getString("denominacion");
+
+                                lineasDisponibles.add(denominacion);
+                                presenter.showLineasDisponibles(lineasDisponibles);
+
+
+
+
+
+
+
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("La respuesta del servidor Erorr!! es: " + error.toString());
+
+                    }
+                });
+
+// Access the RequestQueue through your singleton class.
+        requestQueue.add(jsonObjectRequest);
+
+
+
+
+
+// ESTO ANDA!!
+      /*  StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        System.out.println("La respuesta del servidor es: " + response);
+                        //response.substring(0,500)
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("La respuesta del servidor con error!! es: " + error.toString());
+            }
+        });
+        requestQueue.add(stringRequest);
+
+
+*/
+
+        //despues de la prueba, lo que estaba antes
+
+      /*List<String> lineasDisponibles = new ArrayList<>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
@@ -225,6 +302,8 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+
+                        System.out.println("------------------ Respuesta del servidor local" + response);
                         // Process the JSON
                         try{
                             for(int i=0;i<response.length();i++){
@@ -243,11 +322,14 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
                 new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error){
+                        System.out.println("Error del servidor!!: " + error.toString());
 //                      presenter.showResponseError("no se pudo cargar el listado de lineas activas");
                     }
                 }
         );
         requestQueue.add(jsonArrayRequest);
+
+       */
     }
 
 
