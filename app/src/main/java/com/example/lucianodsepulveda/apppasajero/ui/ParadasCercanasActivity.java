@@ -240,7 +240,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                         } else {
 
 
-                            System.out.println("---------------------- ya se obtuvo correctamente la ubicacion----------------------------------");
+                            System.out.println("---------------------- ubicacion obtenida con exito----------------------------------");
                             dialogBuscandoParadas = new ProgressDialog(ParadasCercanasActivity.this);
                             dialogBuscandoParadas.setMessage("Buscando paradas cercanas..");
                             dialogBuscandoParadas.show();
@@ -300,6 +300,8 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                                             dialogBuscandoParadas.cancel();
                                             Intent intent = new Intent(ParadasCercanasActivity.this, MapsActivity.class);
                                             intent.putParcelableArrayListExtra("key", (ArrayList<? extends Parcelable>) listaParadasCercanas);
+
+
                                             intent.putExtra("lat", getLatitutd());
                                             intent.putExtra("lng", getLongitud());
                                             intent.putExtra("radio", eleccionRadioParadas);

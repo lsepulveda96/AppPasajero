@@ -20,7 +20,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasCercanasInterface;
@@ -41,7 +40,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
     //public static String ipv4 = "http://127.0.0.1:50000/v1/mobile/test";
 
-    public static String ipv4 = "http://192.168.0.103:50000/v1/mobile/test";
+    public static String ipv4 = "http://192.168.0.103:50000/v1/mobile/";
 
     private List<ParadaCercana> listaParadas;
     private ParadaCercana paradaCercana;
@@ -59,6 +58,10 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
         Double radioD = Double.parseDouble(eleccionRadioParadas);
 
         for (ParadaCercana item : listaParadasExistentes) {
+
+            System.out.println("las paradas obtenidas!!! --------  direccion  -------- " + item.getDireccion());
+            System.out.println("las paradas obtenidas!!! --------  latitud -------- " + item.getLatitud());
+            System.out.println("las paradas obtenidas!!! --------  longitud -------- " + item.getLongitud());
 
             Double distancia = getDistanciaLocal(Double.parseDouble(latitudStr), Double.parseDouble(longitudStr), item.getLatitud(), item.getLongitud());
 
@@ -118,8 +121,57 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     public List<ParadaCercana> makeConsultaParadasRecorridoApi(final String seleccionLin) {
         //TODO: hay que cambiar ipv4, y hacer controller del otro lado, para que traiga todas las paradas con respecto a esa linea
         listaParadas = new ArrayList<>();
-        String url = ipv4+"/rest/paradasRecorrido/paradasParaApp/"+seleccionLin;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+        //String url = ipv4+"/rest/paradasRecorrido/paradasParaApp/"+seleccionLin;
+        String url = ipv4+"paradasParaApp/"+seleccionLin;
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONArray ja = response.getJSONArray("data"); // get the JSONArray
+
+                            for(int i=0;i<ja.length();i++){
+
+                                JSONObject parada = ja.getJSONObject(i);
+
+
+                                JSONObject coordenada = new JSONObject(parada.getString("parada")).getJSONObject("coordenada");
+                                String longitud = coordenada.getString("lng");
+
+                                JSONObject coordenada2 = new JSONObject(parada.getString("parada")).getJSONObject("coordenada");
+                                String latitud = coordenada2.getString("lat");
+
+                                String direccion= new JSONObject(parada.getString("parada")).getString("direccion");
+
+                                paradaCercana = new ParadaCercana();
+                                paradaCercana.setLatitud(Double.parseDouble(latitud));
+                                paradaCercana.setLongitud(Double.parseDouble(longitud));
+                                paradaCercana.setDireccion(direccion);
+                                paradaCercana.setLineaDenom(seleccionLin);
+
+                                listaParadas.add(paradaCercana);
+                            }
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("Respuesta del servidor con error: " + error.toString());
+
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+
+      /*  JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 url,
                 (String) null,
@@ -133,8 +185,8 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
                                 JSONObject parada = response.getJSONObject(i);
 
-                                String latitud = parada.getString("latitud");
-                                String longitud = parada.getString("longitud");
+                                String latitud = parada.getString("lat");
+                                String longitud = parada.getString("lng");
                                 String direccion = parada.getString("direccion");
 
                                 paradaCercana = new ParadaCercana();
@@ -158,7 +210,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
                     }
                 }
         );
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(jsonArrayRequest);*/
 
         return listaParadas;
     }
@@ -222,9 +274,8 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     public void makeConsultaLineasApi() {
         //TODO: OJO!! capaz necesito esto en todas las llamadas
         requestQueue = Volley.newRequestQueue(mContext);
-        //String url = ipv4+"/rest/lineas/activas";
 
-        String url = ipv4;
+        String url = ipv4+"lineas/activas";
 
         List<String> lineasDisponibles = new ArrayList<>();
 
@@ -243,7 +294,6 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
                                 lineasDisponibles.add(denominacion);
                             }
 
-//                            return lineas; // return the list
                             presenter.showLineasDisponibles(lineasDisponibles);
 
 
@@ -262,11 +312,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
         requestQueue.add(jsonObjectRequest);
 
-
-
-
-
-// ESTO ANDA!!
+        // para un objeto simple
       /*  StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -284,7 +330,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
         requestQueue.add(stringRequest);
 */
 
-        //despues de la prueba, lo que estaba antes
+        //lo que estaba antes
       /*List<String> lineasDisponibles = new ArrayList<>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(

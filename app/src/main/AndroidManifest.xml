@@ -18,6 +18,9 @@
     <uses-permission android:name="android.permission.hardware.location.gps" />
 
 
+    <queries>
+        <package android:name="com.google.android.apps.maps"/>
+    </queries>
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
@@ -59,7 +62,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBw3_Okyoi4sPieeAIVZqk0TyEikHFk4Ec"/>
+            android:value="AIzaSyBLiFAHJUK24zbN9ytBsed6-HgGP2GkTlI"/>
            <!-- android:value="@string/google_maps_key" /> -->
 
         <meta-data
