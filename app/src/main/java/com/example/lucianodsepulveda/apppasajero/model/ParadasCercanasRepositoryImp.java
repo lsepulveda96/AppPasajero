@@ -119,11 +119,8 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
     @Override
     public List<ParadaCercana> makeConsultaParadasRecorridoApi(final String seleccionLin) {
-        //TODO: hay que cambiar ipv4, y hacer controller del otro lado, para que traiga todas las paradas con respecto a esa linea
         listaParadas = new ArrayList<>();
-        //String url = ipv4+"/rest/paradasRecorrido/paradasParaApp/"+seleccionLin;
         String url = ipv4+"paradasParaApp/"+seleccionLin;
-
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
@@ -138,12 +135,11 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
                                 JSONObject parada = ja.getJSONObject(i);
 
+                                JSONObject coordLng = new JSONObject(parada.getString("parada")).getJSONObject("coordenada");
+                                String longitud = coordLng.getString("lng");
 
-                                JSONObject coordenada = new JSONObject(parada.getString("parada")).getJSONObject("coordenada");
-                                String longitud = coordenada.getString("lng");
-
-                                JSONObject coordenada2 = new JSONObject(parada.getString("parada")).getJSONObject("coordenada");
-                                String latitud = coordenada2.getString("lat");
+                                JSONObject coordLat = new JSONObject(parada.getString("parada")).getJSONObject("coordenada");
+                                String latitud = coordLat.getString("lat");
 
                                 String direccion= new JSONObject(parada.getString("parada")).getString("direccion");
 
@@ -171,6 +167,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
         requestQueue.add(jsonObjectRequest);
 
+        //metodo anterior
       /*  JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 url,
@@ -330,7 +327,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
         requestQueue.add(stringRequest);
 */
 
-        //lo que estaba antes
+        //metodo anterior
       /*List<String> lineasDisponibles = new ArrayList<>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(

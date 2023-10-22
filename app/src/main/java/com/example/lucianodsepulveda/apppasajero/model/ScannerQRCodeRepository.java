@@ -9,6 +9,6 @@ public interface ScannerQRCodeRepository {
 
     NetworkInfo isNetAvailableLocal();
 
-    String makeRequestLlegadaColeApi(String idLinea, String idParada);
+    String makeRequestLlegadaColeApi(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
 }

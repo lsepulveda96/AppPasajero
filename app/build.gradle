@@ -34,7 +34,6 @@ android {
     //buildToolsVersion '26.0.2'
 
     defaultConfig {
-        //applicationId "com.example.lucianodsepulveda.pasajerito"
         applicationId "com.example.lucianodsepulveda.apppasajero"
         minSdkVersion 16
         targetSdkVersion 33

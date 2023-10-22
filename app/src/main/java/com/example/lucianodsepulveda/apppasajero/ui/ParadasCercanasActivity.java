@@ -224,8 +224,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                 dialogBuscandoUbicacion.show();
 
                 System.out.println("----------------------se esta obteniendo la ubicacion----------------------------------");
-                //TODO pasar a model
-//                obtenerUbicacionPasajero();
                 presenter.obtenerUbicacionPasajero();
 
 
@@ -270,9 +268,6 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
                                         System.out.println("----------------------se esta obteniendo las paradas mas cercanas----------------------------------");
                                         //TODO pasar a model
                                         eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
-//
-                                        //cambiar este return, deberia llamarse desde el presenter, showListaParadasCercanas
-//                                        listaParadasCercanas = presenter.getListaParadasCercanas(listaParadasExistentes, eleccionRadioParadas, getLatitutd(), getLongitud());
 
                                         presenter.getListaParadasCercanas(listaParadasExistentes, eleccionRadioParadas, getLatitutd(), getLongitud());
 

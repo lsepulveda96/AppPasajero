@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">STCU</string>
+    <string name="app_name">App Pasajero</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_maps2">Map</string>
     <!--<string name="app_name">Lector Codigo QR - STCU</string>-->
@@ -10,8 +10,6 @@
     <!--<string name="app_name">STCU</string>-->
     <string name="quotedesc">Bienvenido!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_paradasCercanas">App pasajero - Paradas cercanas</string>
     <string name="title_activity_scannerQRCode">App pasajero - Scanner QR code</string>
     <string name="title_activity_paradasFavoritas">App pasajero - Paradas Favoritas</string>

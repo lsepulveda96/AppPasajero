@@ -10,7 +10,7 @@ public interface ScannerQRCodeInterface {
     }
 
     interface Presenter{
-        String makeRequestLlegadaCole(String idLineaQr, String idParadaQr);
+        String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
         NetworkInfo isNetAvailable();
     }
@@ -21,7 +21,7 @@ public interface ScannerQRCodeInterface {
 */
 
     interface Interactor{
-        String makeRequestLlegadaCole(String idLineaQr, String idParadaQr);
+        String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr );
 
         NetworkInfo isNetAvailable();
     }

@@ -100,7 +100,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
 
-            responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr,idParadaQr);
+            responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr, idParadaQr, idParadaQr);
 //            respuesta = mf.makeRequestLlegadaCole( idLineaQr,idParadaQr );
 
 

@@ -15,8 +15,8 @@ public class ScannerQRCodeInteractor extends AppCompatActivity implements Scanne
     }
 
     @Override
-    public String makeRequestLlegadaCole(String idLineaQr, String idParadaQr) {
-        return scannerQRCodeRepository.makeRequestLlegadaColeApi(idLineaQr, idParadaQr);
+    public String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr) {
+        return scannerQRCodeRepository.makeRequestLlegadaColeApi(idLineaQr, idRecorridoQr, idParadaQr);
     }
 
     /**

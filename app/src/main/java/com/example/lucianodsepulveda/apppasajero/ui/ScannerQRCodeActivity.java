@@ -46,7 +46,7 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     private Button btnFav, btnAtras;
     private boolean isEmail = false, scannerIniciado = false;
-    private String dataC, idLineaQr, idParadaQr, denomQr, direccionQr, responseArriboColectivo = "", intentData = "";
+    private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseArriboColectivo = "", intentData = "";
     private int control;
     private ProgressDialog dialog2;
 
@@ -200,13 +200,6 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                                 String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
 
-//                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA)
-//                            == PackageManager.PERMISSION_DENIED) {
-//                        cameraSource.start(surfaceView.getHolder());
-//                    }else {
-//                        ActivityCompat.requestPermissions(ScannerQRCodeActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-//                    }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -257,25 +250,42 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
 
                                     String codigo = getData();
                                     String[] nuevoc = codigo.split(",");
+
+
+                                    for(int i=0;i<nuevoc.length;i++) {
+                                        System.out.println("informacion del codigo qr dentro del for -------- " + (nuevoc[i]));
+                                    }
+                                    System.out.println("informacion del codigo qr  getdata------------ " + getData());
+
                                     for(int i=0;i<nuevoc.length;i++) {
                                         if (i == 0) {
                                             idLineaQr = nuevoc[i];
                                         }
                                         if (i == 1) {
-                                            denomQr = nuevoc[i];
+                                            denomLineaQr = nuevoc[i];
                                         }
                                         if (i == 2) {
                                             idParadaQr = nuevoc[i];
                                         }
                                         if (i == 3) {
-                                            direccionQr = nuevoc[i];
+                                            direccionParadaQr = nuevoc[i];
+                                        }
+                                        if (i == 4) {
+                                            idRecorridoQr = nuevoc[i];
+                                        }
+                                        if (i == 5) {
+                                            denomRecorridoQr = nuevoc[i];
                                         }
                                     }
 
-                                    final String codShow = denomQr + " - "  + direccionQr;
+                                    final String codShow = denomLineaQr + " - "  + direccionParadaQr;
                                     txtBarcodeValue.setText(codShow);
 
-                                    responseArriboColectivo = presenter.makeRequestLlegadaCole( idLineaQr,idParadaQr );
+                                    responseArriboColectivo = presenter.makeRequestLlegadaCole( idLineaQr, idParadaQr, idRecorridoQr);
+
+                                    System.out.println("+++++++++++++++++++++++++++++++");
+                                    System.out.println("informacion de lo que traer arribo colectivo" + responseArriboColectivo);
+                                    System.out.println("+++++++++++++++++++++++++++++++");
 
                                     dialog2 = new ProgressDialog( ScannerQRCodeActivity.this );
                                     dialog2.setTitle( "Codigo detectado" );

@@ -21,11 +21,11 @@ public class ScannerQRCodePresenter implements ScannerQRCodeInterface.Presenter 
     }
 
     @Override
-    public String makeRequestLlegadaCole(String idLineaQr, String idParadaQr) {
+    public String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr) {
         String respuesta = "";
 
         if(view != null){
-            respuesta = interactor.makeRequestLlegadaCole(idLineaQr,idParadaQr);
+            respuesta = interactor.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
         }
 
         return respuesta;
