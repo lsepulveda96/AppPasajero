@@ -46,6 +46,8 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
     SharedPreferences.Editor sharedPreferencesEditor;
     SwipeRefreshLayout swipeRefreshLayout;
     TextView tvNet, tvAccess, tvNetwork;
+    ScannerQRCodeActivity sQrA;
+    private String responseArriboColectivo = "";
 
     List<Parada> listaParadas = new ArrayList<Parada>();
 
@@ -85,6 +87,7 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new ParadasFavoritasPresenter(this, this);
+        sQrA = new ScannerQRCodeActivity();
         setContentView(R.layout.activity_paradas_favoritas);
         initViews();
     }
@@ -117,7 +120,8 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
 
         final MainFragment fragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment) ;
 
-        recyclerViewAdapter = new RecyclerViewAdapter(listaParadas,this,fragment);
+
+        recyclerViewAdapter = new RecyclerViewAdapter(listaParadas,this, fragment, responseArriboColectivo);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper( new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
@@ -201,4 +205,19 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
     public void showResult(String result) {
 
     }
+
+    @Override
+    public void showArriboColectivo(String result) {
+        System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder: " + result );
+
+        SharedPreferences sharedPreferencesArriboCole;
+        sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor myEditor = sharedPreferencesArriboCole.edit();
+        myEditor.putString("TiempoArribo", result);
+        myEditor.commit();
+        recyclerViewAdapter.notifyDataSetChanged();
+
+        responseArriboColectivo = result;
+    }
+
 }

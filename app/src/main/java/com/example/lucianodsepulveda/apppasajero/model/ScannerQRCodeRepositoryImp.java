@@ -3,21 +3,27 @@ package com.example.lucianodsepulveda.apppasajero.model;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
     ScannerQRCodeInterface.Presenter presenter;
     Context mContext;
+
     private String responseArriboColectivo = "";
 //    public static String ipv4 = "http://stcu.mdn.unp.edu.ar:50002/stcu_app";
-    public static String ipv4 = "http://192.168.0.108:50000/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.102:50000/v1/mobile/";
     RequestQueue requestQueue;
+
 
     public ScannerQRCodeRepositoryImp(ScannerQRCodeInterface.Presenter presenter, Context mContext) {
         this.presenter = presenter;
@@ -40,6 +46,9 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
         return responseArriboColectivo;
     }*/
 
+
+    // metodo previo a modif que no devuevle nada
+/*
     public String makeRequestLlegadaColeApi(String idLineaString,  String idRecorridoString, String idParadaString){
         String url = ipv4+"obtenerTiempoLlegadaCole/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
 
@@ -52,9 +61,67 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
                 error -> Log.d( "ERROR",error.toString() )
         );
 
+
         requestQueue.add(getRequest);
         return responseArriboColectivo;
+    }*/
+
+    public String makeRequestLlegadaColeApi(String idLineaString,  String idRecorridoString, String idParadaString){
+        String url = ipv4+"obtenerTiempoLlegadaCole/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
+
+        requestQueue = Volley.newRequestQueue(mContext);
+
+        System.out.println("informacion: datos que envia qr. idLineaQr" + idLineaString);
+        System.out.println("informacion: datos que envia qr. idRecorridoQr" + idRecorridoString);
+        System.out.println("informacion: datos que envia qr. idParadaQr" + idParadaString);
+
+//        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
+//                response -> responseArriboColectivo = response,
+//                error -> Log.d( "ERROR",error.toString() )
+//        );
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            responseArriboColectivo =  response.getString("mensaje");
+                            presenter.showArriboColectivo(responseArriboColectivo);
+                            System.out.println("informacion del servidor ok : " + response);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("error get Llegada cole: " + error.toString());
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+
+        return responseArriboColectivo;
+//        return msjeResp[0];
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public NetworkInfo isNetAvailableLocal() {

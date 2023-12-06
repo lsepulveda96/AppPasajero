@@ -6,13 +6,16 @@ public interface ScannerQRCodeInterface {
 
     interface View{
         // la vista muestra el dato una vez calculado
-//        void showResult(String result);
+        void showArriboColectivo(String result);
     }
 
     interface Presenter{
         String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
+
         NetworkInfo isNetAvailable();
+
+        void showArriboColectivo(String result);
     }
 
    /* interface Model{

@@ -281,11 +281,8 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                                     final String codShow = denomLineaQr + " - "  + direccionParadaQr;
                                     txtBarcodeValue.setText(codShow);
 
-                                    responseArriboColectivo = presenter.makeRequestLlegadaCole( idLineaQr, idParadaQr, idRecorridoQr);
-
-                                    System.out.println("+++++++++++++++++++++++++++++++");
-                                    System.out.println("informacion de lo que traer arribo colectivo" + responseArriboColectivo);
-                                    System.out.println("+++++++++++++++++++++++++++++++");
+                                    responseArriboColectivo = presenter.makeRequestLlegadaCole( idLineaQr, idRecorridoQr, idParadaQr);
+                                    // este metodo llama a showArriboColectivo. no traia la respuesta sino
 
                                     dialog2 = new ProgressDialog( ScannerQRCodeActivity.this );
                                     dialog2.setTitle( "Codigo detectado" );
@@ -296,6 +293,11 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                                     final Handler handler = new Handler();
                                     final Runnable r = new Runnable(){
                                         public void run(){
+
+                                            System.out.println("+++++++++++++++++++++++++++++++");
+                                            System.out.println("informacion de lo que traer arribo colectivo" + responseArriboColectivo);
+                                            System.out.println("+++++++++++++++++++++++++++++++");
+
 
                                             dialog2.cancel();
                                             String resp1 = "";
@@ -354,7 +356,7 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                                             }
                                         }
                                     };
-                                    handler.postDelayed(r,4000);
+                                    handler.postDelayed(r,5000);
                                 }
                                 control++;
                             }
@@ -391,4 +393,8 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
         return this.responseArriboColectivo;
     }
 
+    @Override
+    public void showArriboColectivo(String result) {
+        responseArriboColectivo = result;
+    }
 }

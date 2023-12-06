@@ -36,6 +36,12 @@ public class ScannerQRCodePresenter implements ScannerQRCodeInterface.Presenter 
         return interactor.isNetAvailable();
     }
 
+    @Override
+    public void showArriboColectivo(String result) {
+        if(view!=null){
+            view.showArriboColectivo(result);
+        }
+    }
 
 
 }

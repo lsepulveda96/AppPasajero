@@ -39,4 +39,22 @@ public class ParadasFavoritasPresenter implements ParadasFavoritasInterface.Pres
     }
 
 
+    @Override
+    public String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr) {
+        String respuesta = "";
+
+        if(view != null){
+            respuesta = interactor.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
+        }
+
+        return respuesta;
+    }
+
+    @Override
+    public void showArriboColectivo(String result) {
+        if(view!=null){
+            view.showArriboColectivo(result);
+        }
+    }
+
 }

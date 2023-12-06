@@ -7,6 +7,8 @@ public interface ParadasFavoritasInterface {
     interface View{
         // la vista muestra el dato una vez calculado
         void showResult(String result);
+
+        void showArriboColectivo(String result);
     }
 
     interface Presenter{
@@ -14,7 +16,11 @@ public interface ParadasFavoritasInterface {
         void showResultPresenter(String result);
         //se comunica con el modelo, se ejecuta en el presenter
 
+        String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr);
+
         NetworkInfo isNetAvailable();
+
+        void showArriboColectivo(String result);
     }
 
     /*interface Model{
@@ -25,6 +31,8 @@ public interface ParadasFavoritasInterface {
     }*/
 
     interface Interactor {
+        String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr );
+
         NetworkInfo isNetAvailable();
     }
 

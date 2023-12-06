@@ -7,4 +7,6 @@ import android.net.NetworkInfo;
  */
 public interface ParadasFavoritasRepository {
     NetworkInfo isNetAvailableLocal();
+
+    String makeRequestLlegadaColeApi(String idLineaQr, String idRecorridoQr, String idParadaQr);
 }

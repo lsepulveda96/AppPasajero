@@ -23,5 +23,9 @@ public class ParadasFavoritasInteractor extends AppCompatActivity implements Par
         return paradasFavoritasRepository.isNetAvailableLocal();
     }
 
+    @Override
+    public String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr) {
+        return paradasFavoritasRepository.makeRequestLlegadaColeApi(idLineaQr, idRecorridoQr, idParadaQr);
+    }
 
 }
