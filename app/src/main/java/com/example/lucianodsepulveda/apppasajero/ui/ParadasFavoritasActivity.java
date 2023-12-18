@@ -1,5 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.ui;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -11,6 +13,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,7 +21,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ParadasFavoritasActivity extends FragmentActivity implements View.OnClickListener, ParadasFavoritasInterface.View {
+public class ParadasFavoritasActivity extends Activity implements ParadasFavoritasInterface.View {
 
     //cambiar nombres variables
     Button btnScanBarcode;
@@ -46,7 +48,6 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
     SharedPreferences.Editor sharedPreferencesEditor;
     SwipeRefreshLayout swipeRefreshLayout;
     TextView tvNet, tvAccess, tvNetwork;
-    ScannerQRCodeActivity sQrA;
     private String responseArriboColectivo = "";
 
     List<Parada> listaParadas = new ArrayList<Parada>();
@@ -87,18 +88,22 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new ParadasFavoritasPresenter(this, this);
-        sQrA = new ScannerQRCodeActivity();
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         setContentView(R.layout.activity_paradas_favoritas);
         initViews();
     }
 
 
     public void initViews() {
-        btnScanBarcode = findViewById(R.id.btnScanBarcode);
-        btnScanBarcode.setOnClickListener(this);
+//        btnScanBarcode = findViewById(R.id.btnScanBarcode);
+//        btnScanBarcode.setOnClickListener(this);
         listaParadasAdapter = (ListView) findViewById(R.id.lvFav);
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 //        tvNet = (TextView)findViewById(R.id.tv_net);
 //        tvAccess = (TextView)findViewById(R.id.tv_access);
         tvNetwork = (TextView)findViewById(R.id.tv_network);
@@ -176,13 +181,13 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
 
         //necesario para comprobar internet en tiempo real
         IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mBroadcastReceiver,intentFilter);
+        registerReceiver(mBroadcastReceiver,intentFilter); 
         //
     }
 
 
     //este metodo queda, porque solo llama a otro acitiviy
-    @Override
+  /*  @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -191,7 +196,7 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
                 finish();
                 break;
         }
-    }
+    }*/
 
     public List<Parada> getListaParadas() {
         return listaParadas;
@@ -208,9 +213,7 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
 
     @Override
     public void showArriboColectivo(String result) {
-        System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder: " + result );
-
-        SharedPreferences sharedPreferencesArriboCole;
+                SharedPreferences sharedPreferencesArriboCole;
         sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
         SharedPreferences.Editor myEditor = sharedPreferencesArriboCole.edit();
         myEditor.putString("TiempoArribo", result);
@@ -218,6 +221,12 @@ public class ParadasFavoritasActivity extends FragmentActivity implements View.O
         recyclerViewAdapter.notifyDataSetChanged();
 
         responseArriboColectivo = result;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
     }
 
 }

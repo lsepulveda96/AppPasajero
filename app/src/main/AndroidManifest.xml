@@ -49,16 +49,28 @@
 
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity"
-            android:label="@string/title_activity_paradasCercanas"></activity>
+            android:label="@string/title_activity_paradasCercanas"><meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.lucianodsepulveda.apppasajero.ui.MainActivity" />
+        </activity>
 
 
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.ScannerQRCodeActivity"
-            android:label="@string/title_activity_scannerQRCode"></activity>
+            android:label="@string/title_activity_scannerQRCode">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.lucianodsepulveda.apppasajero.ui.MainActivity" />
+        </activity>
+
 
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasFavoritasActivity"
-            android:label="@string/title_activity_paradasFavoritas"></activity>
+            android:label="@string/title_activity_paradasFavoritas">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.lucianodsepulveda.apppasajero.ui.MainActivity" />
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

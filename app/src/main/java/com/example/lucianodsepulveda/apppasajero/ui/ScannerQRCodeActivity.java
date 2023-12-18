@@ -1,6 +1,8 @@
 package com.example.lucianodsepulveda.apppasajero.ui;
 
 import android.Manifest;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -16,6 +18,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -24,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
@@ -37,7 +39,7 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 import java.util.Map;
 
-public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQRCodeInterface.View {
+public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInterface.View {
 
     private SurfaceView surfaceView;
     private TextView txtBarcodeValue, tvNetwork;
@@ -76,7 +78,6 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
 
             switch (activeNetwork.getType()) {
                 case ConnectivityManager.TYPE_WIFI:
-                    Toast.makeText(getApplicationContext(), "wifi encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
 
 //                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
@@ -87,7 +88,6 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
                     surfaceView.setVisibility(View.VISIBLE);
                     break;
                 case ConnectivityManager.TYPE_MOBILE:
-                    Toast.makeText(getApplicationContext(), "mobile encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
 
 //                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
@@ -116,6 +116,11 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
         presenter = new ScannerQRCodePresenter(this, this);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         initViews();
 
 
@@ -396,5 +401,11 @@ public class ScannerQRCodeActivity extends FragmentActivity implements ScannerQR
     @Override
     public void showArriboColectivo(String result) {
         responseArriboColectivo = result;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
     }
 }

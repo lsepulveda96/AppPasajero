@@ -1,5 +1,7 @@
 package com.example.lucianodsepulveda.apppasajero.ui;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.lucianodsepulveda.apppasajero.R;
@@ -34,7 +36,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ParadasCercanasActivity extends FragmentActivity implements ParadasCercanasInterface.View {
+public class ParadasCercanasActivity extends Activity implements ParadasCercanasInterface.View {
 
 
     private Button btnObtenerUbicacion, btnEncontrarUbicacion;
@@ -64,6 +66,7 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
 
     //necesario para comprobar internet en tiempo real
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             checkStatus();
@@ -98,6 +101,10 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         super.onCreate(savedInstanceState);
         presenter = new ParadasCercanasPresenter(this, this, this);
         setContentView(R.layout.activity_paradas_cercanas);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         presenter.obtenerPermisos();
         inicializarElementos();
@@ -143,6 +150,8 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
             handler2.postDelayed(r2,5000);
         });
     }
+
+
 
     private void inicializarElementos() {
         adapterSeleccionLinea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -396,5 +405,11 @@ public class ParadasCercanasActivity extends FragmentActivity implements Paradas
         return this.lineasDisponibles;
     }
 
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
+    }
 
 }

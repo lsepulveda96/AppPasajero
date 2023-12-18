@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +29,21 @@ import java.util.Map;
 
 class RecyclerViewHolder extends RecyclerView.ViewHolder{
 
-    public TextView txtCodigo;
+//    public TextView txtCodigo;
+
+    private ImageView imgItem;
+    private TextView tvTitulo;
+    private TextView tvDescripcion;
+//        private ItemList itemDetail;
+
 
         public RecyclerViewHolder(View itemView) {
         super(itemView);
-        txtCodigo = (TextView) itemView.findViewById(R.id.txtCodigo);
+//        txtCodigo = (TextView) itemView.findViewById(R.id.txtCodigo);
+
+            imgItem = itemView.findViewById(R.id.imgItem);
+            tvTitulo = itemView.findViewById(R.id.tvTitulo);
+            tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
 
     }
 }
@@ -59,6 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private final ParadasFavoritasActivity ma2;
         private String mItem;
         private TextView txtCodigo;
+
         //private String responseArriboColectivo = "";
         private String idLineaQr;
         private String idParadaQr;
@@ -66,6 +78,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private String direccionParadaQr;
         private String idRecorridoQr;
         private String denomRecorridoQr;
+
+
+// agregados recientemente para personalizar recyclerview
+        private ImageView imgItem;
+        private TextView tvTitulo;
+        private TextView tvDescripcion;
+//        private ItemList itemDetail;
 
         SharedPreferences preferences;
 
@@ -79,15 +98,68 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             itemView.setOnClickListener(this);
             ma2 = ma;
             mf = mf2;
-            txtCodigo = (TextView) itemView.findViewById(R.id.txtCodigo);
+//            txtCodigo = (TextView) itemView.findViewById(R.id.txtCodigo);
+            tvTitulo = itemView.findViewById(R.id.tvTitulo);
+            tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
+
             presenter = new ParadasFavoritasPresenter(ma,ma);
 
         }
 
 
+        // muestra en pantalla la informacion
         public void setmItem(String item){
             mItem = item;
-            txtCodigo.setText(mItem);
+            mItem = mItem.replaceAll("\"", ""); // saca los tildes
+
+            String titulo = "";
+            String descripcion = "";
+            String[] textSplit = mItem.split("-"); // separa el titulo de la descripcion
+
+            for(int i=0;i<textSplit.length;i++) {
+                if (i == 0) {
+                    descripcion = textSplit[i];
+                }
+                if (i == 1) {
+                    titulo = textSplit[i];
+                }
+            }
+
+//            txtCodigo.setText(mItem);
+
+
+
+            String tituloDetail = "";
+            String descripDetail = "";
+
+            // para separar el titulo del contenido
+            String[] contenidoTitulo = titulo.split(":");
+
+            for(int i=0;i<contenidoTitulo.length;i++) {
+                //ignora la palabra "direccion"
+                if (i == 1) {
+                    tituloDetail = contenidoTitulo[i];
+                }
+            }
+
+            // para separar la descripcion del contenido
+            String[] contenidoDescripcion = descripcion.split(":");
+
+            for(int i=0;i<contenidoDescripcion.length;i++) {
+                //ignora la palabra "direccion"
+                if (i == 1) {
+                    descripDetail = contenidoDescripcion[i];
+                }
+            }
+
+
+
+//            tvTitulo.setText(tituloDetail);
+//            tvDescripcion.setText(descripcionDetail);
+
+            tvTitulo.setText(tituloDetail);
+            tvDescripcion.setText(descripDetail);
+
         }
 
         @Override
@@ -188,10 +260,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // esto anda
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.item,parent,false);
         ViewHolder vh = new ViewHolder(itemView, paradasFavoritasActivity,mf);
         return vh;
+
+        /*View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_view, parent, false);
+        return new RecyclerHolder(view);*/
+
+       /* LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.item_list_view, parent, false);
+        ViewHolder vh = new ViewHolder(itemView, paradasFavoritasActivity,mf);
+        return vh;*/
     }
 
     @Override
