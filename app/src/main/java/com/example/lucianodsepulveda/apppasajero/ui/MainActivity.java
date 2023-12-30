@@ -4,24 +4,26 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.lucianodsepulveda.apppasajero.R;
 
 public class MainActivity extends Activity {
 
-    Button btnParadasCercanas;
-    Button btnScannerQR;
-    Button btnFavoritos;
+    LinearLayout btnParadasCercanas;
+    LinearLayout btnScannerQR;
+    LinearLayout btnFavoritos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        if(getActionBar()!=null)
+//            this.getActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        btnParadasCercanas = (Button) findViewById( R.id.btnParadasCercanas);
-        btnFavoritos = (Button) findViewById( R.id.btnFavoritos);
-        btnScannerQR = (Button) findViewById( R.id.btnScannerQR);
+        btnParadasCercanas = findViewById( R.id.btnParadasCercanas);
+        btnFavoritos = findViewById( R.id.btnFavoritos);
+        btnScannerQR = findViewById( R.id.btnScannerQR);
 
         btnParadasCercanas.setOnClickListener(new View.OnClickListener() {
             @Override

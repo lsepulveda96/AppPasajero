@@ -1,69 +1,306 @@
 <RelativeLayout
+    android:theme="@style/Theme.AppCompat.NoActionBar"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:ignore="ContentDescrpition"
+    android:background="@drawable/fondo_amarillo"
     tools:context="com.example.lucianodsepulveda.apppasajero.ui.MainActivity">
 
-  <androidx.appcompat.widget.AppCompatImageView
-      android:id="@+id/imgFondo"
+  <!--   imagen de fondo -->
+  <!--<ImageView
+      android:id="@+id/imageView"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:scaleType="centerCrop"
-      android:src="@drawable/img_fondo_limpio" />
+      android:src="@drawable/mobile_mockup_stcu_yellow" />-->
 
-  <Button
-      android:id="@+id/btnParadasCercanas"
-      android:layout_width="wrap_content"
-      android:layout_height="120dp"
-      android:layout_below="@+id/letrasStcu"
-      android:layout_gravity="center"
-      android:layout_marginTop="70dp"
-      android:contentDescription="Boton paradas cercanas"
-      android:background="@drawable/paradas_cercanas_btn_style" />
-
-  <Button
-      android:id="@+id/btnScannerQR"
-      android:layout_width="wrap_content"
-      android:layout_height="120dp"
-      android:layout_below="@+id/btnParadasCercanas"
-      android:layout_gravity="center"
-      android:layout_marginTop="10dp"
-      android:contentDescription="Boton scanner qr"
-      android:background="@drawable/scanner_qr_btn_style" />
-
-
-  <Button
-      android:id="@+id/btnFavoritos"
-      android:layout_width="wrap_content"
-      android:layout_height="120dp"
-      android:layout_below="@+id/btnScannerQR"
-      android:gravity="center"
-      android:layout_marginTop="10dp"
-      android:contentDescription="Boton favoritos"
-      android:background="@drawable/favoritos_btn_style" />
-
-
-  <androidx.appcompat.widget.AppCompatImageView
-      android:id="@+id/imgIcono"
-      android:layout_width="130dp"
-      android:layout_height="130dp"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="20dp"
-      android:src="@drawable/logo_stcu" />
-
-  <androidx.appcompat.widget.AppCompatImageView
-      android:id="@+id/letrasStcu"
+  <ImageView
+      android:id="@+id/imageView"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@+id/imgIcono"
-      android:layout_gravity="center"
-      android:layout_marginTop="50dp"
-      android:src="@drawable/stcuapp_letras" />
+      android:layout_height="800dp"
+      android:layout_marginTop="180dp"
+      android:src="@drawable/fondo_gris" />
 
+
+
+
+  <!--   boton paradas cercanas -->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="100dp"
+      android:id="@+id/btnParadasCercanas"
+      android:stateListAnimator="@null"
+      android:elevation="12dp"
+      android:orientation="horizontal"
+      android:layout_marginTop="300dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:background="@drawable/fondo_gris_botones"
+      android:padding="5dp">
+
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/imagen_paradas_cercanas"
+        android:elevation="12dp"
+        android:stateListAnimator="@null"
+        />
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_centerHorizontal="true"
+          android:fontFamily="@font/bebasneue_regular"
+          android:textSize="25dp"
+          android:textColor="#FFFFFF"
+          android:text="Paradas cercanas" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/bebasneue_regular"
+          android:textColor="#FFAB40"
+          android:textSize="13sp"
+          android:textAlignment="center"
+          android:text="Encuentre paradas cercanas\n a su ubicacion"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/flecha_amarilla" />
+  </LinearLayout>
+
+
+
+  <!--   boton scanner qr -->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="100dp"
+      android:id="@+id/btnScannerQR"
+      android:layout_below="@+id/btnParadasCercanas"
+      android:stateListAnimator="@null"
+      android:elevation="12dp"
+      android:orientation="horizontal"
+      android:layout_marginTop="20dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:background="@drawable/fondo_gris_botones"
+      android:padding="5dp">
+
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/imagen_scanner_qr"
+        android:elevation="12dp"
+        android:stateListAnimator="@null"
+        />
+
+    <LinearLayout
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_centerHorizontal="true"
+          android:fontFamily="@font/bebasneue_regular"
+          android:textSize="25dp"
+          android:textColor="#FFFFFF"
+          android:text="Escanear codigo qr" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/bebasneue_regular"
+          android:textColor="#FFAB40"
+          android:textSize="13sp"
+          android:textAlignment="center"
+          android:text="Escanear codigo de parada"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/flecha_amarilla" />
+  </LinearLayout>
+
+
+
+
+  <!--   boton paradas favoritas -->
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="100dp"
+      android:id="@+id/btnFavoritos"
+      android:layout_below="@+id/btnScannerQR"
+      android:stateListAnimator="@null"
+      android:elevation="12dp"
+      android:orientation="horizontal"
+      android:layout_marginTop="20dp"
+      android:layout_marginLeft="5dp"
+      android:layout_marginRight="5dp"
+      android:background="@drawable/fondo_gris_botones"
+      android:padding="5dp">
+
+    <ImageView
+        android:layout_marginLeft="10dp"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/imagen_paradas_favoritas"
+        android:elevation="12dp"
+        android:stateListAnimator="@null"
+        />
+
+    <LinearLayout
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_centerHorizontal="true"
+          android:fontFamily="@font/bebasneue_regular"
+          android:textSize="25dp"
+          android:textColor="#FFFFFF"
+          android:text="Paradas favoritas" />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="@font/bebasneue_regular"
+          android:textColor="#FFAB40"
+          android:textSize="13sp"
+          android:textAlignment="center"
+          android:text="consulta paradas usadas\n con frecuencia"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/flecha_amarilla" />
+  </LinearLayout>
+
+  <ImageView
+      android:layout_width="290dp"
+      android:layout_height="290dp"
+      android:layout_alignParentEnd="true"
+      android:layout_marginEnd="0dp"
+      android:layout_alignParentTop="true"
+      android:layout_marginTop="-10dp"
+      android:src="@drawable/icono_mundo" />
+
+
+
+  <ImageView
+      android:layout_width="85dp"
+      android:layout_height="85dp"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:layout_marginTop="50dp"
+      android:layout_marginStart="30dp"
+      android:src="@drawable/letras_icono_stcu" />
 
 </RelativeLayout>
+
+
+
+
+
+    <!--<RelativeLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:ignore="ContentDescrpition"-->
+<!--    tools:context="com.example.lucianodsepulveda.apppasajero.ui.MainActivity">-->
+
+<!--  <androidx.appcompat.widget.AppCompatImageView-->
+<!--      android:id="@+id/imgFondo"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="match_parent"-->
+<!--      android:scaleType="centerCrop"-->
+<!--      android:src="@drawable/img_fondo_limpio" />-->
+
+<!--  <Button-->
+<!--      android:id="@+id/btnParadasCercanas"-->
+<!--      android:layout_width="wrap_content"-->
+<!--      android:layout_height="120dp"-->
+<!--      android:layout_below="@+id/letrasStcu"-->
+<!--      android:layout_gravity="center"-->
+<!--      android:layout_marginTop="70dp"-->
+<!--      android:contentDescription="Boton paradas cercanas"-->
+<!--      android:background="@drawable/paradas_cercanas_btn_style" />-->
+
+<!--  <Button-->
+<!--      android:id="@+id/btnScannerQR"-->
+<!--      android:layout_width="wrap_content"-->
+<!--      android:layout_height="120dp"-->
+<!--      android:layout_below="@+id/btnParadasCercanas"-->
+<!--      android:layout_gravity="center"-->
+<!--      android:layout_marginTop="10dp"-->
+<!--      android:contentDescription="Boton scanner qr"-->
+<!--      android:background="@drawable/scanner_qr_btn_style" />-->
+
+
+<!--  <Button-->
+<!--      android:id="@+id/btnFavoritos"-->
+<!--      android:layout_width="wrap_content"-->
+<!--      android:layout_height="120dp"-->
+<!--      android:layout_below="@+id/btnScannerQR"-->
+<!--      android:gravity="center"-->
+<!--      android:layout_marginTop="10dp"-->
+<!--      android:contentDescription="Boton favoritos"-->
+<!--      android:background="@drawable/favoritos_btn_style" />-->
+
+
+<!--  <androidx.appcompat.widget.AppCompatImageView-->
+<!--      android:id="@+id/imgIcono"-->
+<!--      android:layout_width="130dp"-->
+<!--      android:layout_height="130dp"-->
+<!--      android:layout_centerHorizontal="true"-->
+<!--      android:layout_marginTop="20dp"-->
+<!--      android:src="@drawable/logo_stcu" />-->
+
+<!--  <androidx.appcompat.widget.AppCompatImageView-->
+<!--      android:id="@+id/letrasStcu"-->
+<!--      android:layout_width="match_parent"-->
+<!--      android:layout_height="wrap_content"-->
+<!--      android:layout_below="@+id/imgIcono"-->
+<!--      android:layout_gravity="center"-->
+<!--      android:layout_marginTop="50dp"-->
+<!--      android:src="@drawable/stcuapp_letras" />-->
+
+
+<!--</RelativeLayout>-->
 
 
 
