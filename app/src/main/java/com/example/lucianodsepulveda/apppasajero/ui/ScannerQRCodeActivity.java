@@ -142,6 +142,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
             }
         });
 
+        btnFav.setEnabled( false );
         btnFav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,6 +253,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
                                 setData(intentData);
 
                                 if(control == 0) {
+                                    btnFav.setEnabled( true );
 
                                     String codigo = getData();
                                     String[] nuevoc = codigo.split(",");
