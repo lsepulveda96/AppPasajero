@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,26 +40,21 @@ import java.util.TimerTask;
 
 public class ParadasCercanasActivity extends Activity implements ParadasCercanasInterface.View {
 
-
-    private Button btnObtenerUbicacion, btnEncontrarUbicacion;
-//    private Button btnEncontrarUbicacion;
-//    private TextView tvUbicacion;
-//    private String miLatitud;
+    String eleccionLinea = "";
+    String eleccionRadioParadas = "";
+    private Button btnBuscarParadas;
     private List<String> lineasDisponibles;
-    private String miLongitud, eleccionRadioParadas, miLatitud;
+    private String miLongitud, miLatitud;
 //    private String eleccionRadioParadas;
     private List<ParadaCercana> listaParadasExistentes, listaParadasCercanas;
 //    private List<ParadaCercana> listaParadasCercanas;
     private Spinner itemSeleccionRadio, itemSeleccionLinea;
 //    private Spinner itemSeleccionLinea;
-    private TextView tvRadio, tvUbicacion, tvDisponibilidadRed, tvDisponibilidadInternet, tvNetwork;
-    private ArrayAdapter<String> adapterSeleccionLinea;
-    private ProgressBar progressBar;
-//    private TextView tvDisponibilidadRed, tvDisponibilidadInternet;
-//    private TextView tvDisponibilidadInternet;
+    private TextView tvRadio, tvUbicacion, tvNetwork;
+    private ArrayAdapter<String> adapterSeleccionLinea, adapterSeleccionRadio;
     private ProgressDialog dialogBuscandoUbicacion, dialogBuscandoParadas, dialogCargandoLineas;
-//    private ProgressDialog dialogBuscandoParadas;
-//    private ProgressDialog dialogCargandoLineas;
+    AutoCompleteTextView autoCompleteTextViewLinea;
+    AutoCompleteTextView autoCompleteTextViewRadio;
 
     //para interface
     ParadasCercanasInterface.Presenter presenter;
@@ -81,10 +78,12 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
         if (null != activeNetwork) {
 
             switch (activeNetwork.getType()){
-                case ConnectivityManager.TYPE_WIFI:Toast.makeText(getApplicationContext(),"wifi encenidido", Toast.LENGTH_SHORT).show();
+                case ConnectivityManager.TYPE_WIFI:
+//                    Toast.makeText(getApplicationContext(),"wifi encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
                     break;
-                case ConnectivityManager.TYPE_MOBILE:Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                case ConnectivityManager.TYPE_MOBILE:
+//                    Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
                     break;
             }
@@ -92,7 +91,7 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
             tvNetwork.setVisibility(View.VISIBLE);
             Toast.makeText(getApplicationContext(),"internet apagado", Toast.LENGTH_SHORT).show();
             // si no hay internet no permite continuar, ver cuando volver a habilitarlo (cuando este cargada lista de lineas)
-            btnEncontrarUbicacion.setEnabled(false);
+            btnBuscarParadas.setEnabled(false);
         }
     }
 
@@ -106,6 +105,8 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        autoCompleteTextViewRadio = findViewById(R.id.autoCompleteRadio);
+
         presenter.obtenerPermisos();
         inicializarElementos();
         try {
@@ -114,6 +115,8 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
             e.printStackTrace();
         }
 
+
+        autoCompleteTextViewLinea = findViewById(R.id.autoCompleteLinea);
 
         //desplaza para abajo para actualizar, reemplaza boton actualizar
         swipe = (SwipeRefreshLayout) findViewById(R.id.swipe);
@@ -136,41 +139,80 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
                     for(String opcion: hs){
                         adapterSeleccionLinea.add(opcion);
                     }
-                    itemSeleccionLinea.setAdapter(adapterSeleccionLinea);
+//                    itemSeleccionLinea.setAdapter(adapterSeleccionLinea);
+                    autoCompleteTextViewLinea.setText("");
+                    autoCompleteTextViewRadio.setText("");
+                    autoCompleteTextViewRadio.setFocusable(false);
+                    autoCompleteTextViewLinea.setFocusable(false);
+                    eleccionLinea = "";
+                    eleccionRadioParadas = "";
+
+                    autoCompleteTextViewLinea.setAdapter(adapterSeleccionLinea);
+                    btnBuscarParadas.setEnabled(false);
 
                     // si no se pudo cargar las lineas
                     if(adapterSeleccionLinea.isEmpty()) {
                         Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
-                    }else{
-                        btnEncontrarUbicacion.setEnabled( true );
-                        itemSeleccionLinea.setEnabled(true);
                     }
+//                    else{
+//                        btnBuscarParadas.setEnabled( true );
+//                        itemSeleccionLinea.setEnabled(true);
+//                    }
                 }
             };
             handler2.postDelayed(r2,5000);
         });
+
+        autoCompleteTextViewLinea.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int position, long arg3) {
+                Object item = parent.getItemAtPosition(position);
+                eleccionLinea = item.toString();
+                enableBtnBuscarParadas();
+            }
+        });
+        // para que no sea editable, solo toma las opciones disponibles
+        autoCompleteTextViewLinea.setInputType(InputType.TYPE_NULL);
+
+        autoCompleteTextViewRadio.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View arg1, int position, long arg3) {
+                Object item = parent.getItemAtPosition(position);
+                eleccionRadioParadas = item.toString();
+                enableBtnBuscarParadas();
+            }
+        });
+        autoCompleteTextViewRadio.setInputType(InputType.TYPE_NULL);
+
+
+
+    } // fin onCreate
+
+    private void enableBtnBuscarParadas() {
+        if(!eleccionRadioParadas.isEmpty() && !eleccionLinea.isEmpty())
+            btnBuscarParadas.setEnabled(true);
+//            Toast.makeText(this, "btn activado", Toast.LENGTH_SHORT).show();
     }
 
 
-
     private void inicializarElementos() {
-        adapterSeleccionLinea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-        itemSeleccionLinea = (Spinner) findViewById(R.id.spinnerItemSeleccionLinea);
-        itemSeleccionLinea.setEnabled(false);
+//        adapterSeleccionLinea = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
+        adapterSeleccionLinea = new ArrayAdapter<>(this, R.layout.dropdown_menu_popup_item);
+//        itemSeleccionLinea = (Spinner) findViewById(R.id.spinnerItemSeleccionLinea);
+//        itemSeleccionLinea.setEnabled(false);
 
-        tvUbicacion = (TextView) findViewById(R.id.tvUbicacion);
         tvRadio = (TextView) findViewById(R.id.tvSeleccionRadio);
-        itemSeleccionRadio = (Spinner) findViewById(R.id.spinnerItemSeleccionRadio);
+        adapterSeleccionRadio = new ArrayAdapter<>(this, R.layout.dropdown_menu_popup_item);
+//        itemSeleccionRadio = (Spinner) findViewById(R.id.spinnerItemSeleccionRadio);
 
-        //TODO:quitar!! no se esta usando
-        btnObtenerUbicacion = (Button) findViewById(R.id.btnObtenerUbicacion);
-
-        btnEncontrarUbicacion = (Button) findViewById(R.id.btnBuscarParadas);
-        btnEncontrarUbicacion.setEnabled(false);
+        btnBuscarParadas = (Button) findViewById(R.id.btnBuscarParadas);
+        btnBuscarParadas.setEnabled(false);
 
         setLatitud("0");
         lineasDisponibles = new ArrayList<>();
         tvNetwork = (TextView)findViewById(R.id.tv_network);
+        tvUbicacion = (TextView)findViewById(R.id.tvUbicacion);
 
         //necesario para comprobar internet en tiempo real
         IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -199,16 +241,19 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
                 for(String opcion: hs){
                     adapterSeleccionLinea.add(opcion);
                 }
-                itemSeleccionLinea.setAdapter(adapterSeleccionLinea);
+//                itemSeleccionLinea.setAdapter(adapterSeleccionLinea);
+                autoCompleteTextViewLinea.setAdapter(adapterSeleccionLinea);
                 adapterSeleccionLinea.setDropDownViewResource(R.layout.textview_spinner_selected);
+
 
                 // si no se pudo cargar las lineas
                 if(adapterSeleccionLinea.isEmpty()) {
                     Toast.makeText( ParadasCercanasActivity.this,"No se pudo cargar el listado de lineas", Toast.LENGTH_SHORT ).show();
-                }else{
-                    btnEncontrarUbicacion.setEnabled( true );
-                    itemSeleccionLinea.setEnabled(true);
                 }
+//                else{
+//                    btnBuscarParadas.setEnabled( true );
+//                    itemSeleccionLinea.setEnabled(true);
+//                }
             }
         };
         handler2.postDelayed(r2,5000);
@@ -219,13 +264,21 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
     }
 
     private void obtenerParadasCercanas() throws InterruptedException {
-        String[] opciones = {"5 cuadras", "10 cuadras", "20 cuadras", "50 cuadras"};
-        ArrayAdapter<String> adapterRadioParadas = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
-        adapterRadioParadas.setDropDownViewResource(R.layout.textview_spinner_selected);
-        itemSeleccionRadio.setAdapter(adapterRadioParadas);
+//        String[] opciones = {"5 cuadras", "10 cuadras", "20 cuadras", "50 cuadras"};
+        String[] opciones = getResources().getStringArray(R.array.radio_paradas);
+//        ArrayAdapter<String> adapterRadioParadas = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, opciones);
+        ArrayAdapter<String> adapterRadioParadas = new ArrayAdapter<String>(this,R.layout.textview_spinner_selected, opciones);
+
+//        adapterRadioParadas.setDropDownViewResource(R.layout.textview_spinner_selected);
+//        itemSeleccionRadio.setAdapter(adapterRadioParadas);
+
+        autoCompleteTextViewRadio.setAdapter(adapterRadioParadas);
+        adapterSeleccionRadio.setDropDownViewResource(R.layout.textview_spinner_selected);
+
+
         listaParadasCercanas = new ArrayList<ParadaCercana>();
 
-        btnEncontrarUbicacion.setOnClickListener(new View.OnClickListener() {
+        btnBuscarParadas.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
 
                 dialogBuscandoUbicacion = new ProgressDialog(ParadasCercanasActivity.this);
@@ -246,12 +299,10 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
                             toast1.show();
                         } else {
 
-
                             System.out.println("---------------------- ubicacion obtenida con exito----------------------------------");
                             dialogBuscandoParadas = new ProgressDialog(ParadasCercanasActivity.this);
                             dialogBuscandoParadas.setMessage("Buscando paradas cercanas..");
                             dialogBuscandoParadas.show();
-
 
                             System.out.println("----------------------se estan obteniendo todas las paradas----------------------------------");
                             //TODO pasar a model
@@ -276,9 +327,11 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
                                         System.out.println("----------------------se obtuvieron todas las paradas----------------------------------");
                                         System.out.println("----------------------se esta obteniendo las paradas mas cercanas----------------------------------");
                                         //TODO pasar a model
-                                        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
+                                        // esto lo retorna en string
+//                                        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
 
-                                        presenter.getListaParadasCercanas(listaParadasExistentes, eleccionRadioParadas, getLatitutd(), getLongitud());
+//                                        presenter.getListaParadasCercanas(listaParadasExistentes, eleccionRadioParadas, getLatitutd(), getLongitud());
+                                        presenter.getListaParadasCercanas(listaParadasExistentes, String.valueOf(eleccionRadioParadas), getLatitutd(), getLongitud());
 
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
@@ -395,9 +448,15 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
     }
 
     public List<ParadaCercana> obtenerParadasDesdeServidor(){
-        String seleccionLinea = itemSeleccionLinea.getSelectedItem().toString();
-        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
-        List<ParadaCercana> listaTodasParadas = presenter.hacerConsultaParadasRecorrido(seleccionLinea);
+//        String seleccionLinea = itemSeleccionLinea.getSelectedItem().toString();
+
+        // metodo obtenerRadio ya no iria. borrar
+
+//        eleccionRadioParadas = presenter.obtenerRadio(itemSeleccionRadio.getSelectedItem().toString());
+//        List<ParadaCercana> listaTodasParadas = presenter.hacerConsultaParadasRecorrido(seleccionLinea);
+
+
+        List<ParadaCercana> listaTodasParadas = presenter.hacerConsultaParadasRecorrido(eleccionLinea);
         return listaTodasParadas;
     }
 

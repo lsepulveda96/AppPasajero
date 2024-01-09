@@ -40,7 +40,7 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
 
     //public static String ipv4 = "http://127.0.0.1:50000/v1/mobile/test";
 
-    public static String ipv4 = "http://192.168.0.102:50000/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.103:50000/v1/mobile/";
 
     private List<ParadaCercana> listaParadas;
     private ParadaCercana paradaCercana;
@@ -120,7 +120,8 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     @Override
     public List<ParadaCercana> makeConsultaParadasRecorridoApi(final String seleccionLin) {
         listaParadas = new ArrayList<>();
-        String url = ipv4+"paradasParaApp/"+seleccionLin;
+        String url = ipv4+"findAllParadasParaApp/"+seleccionLin;
+//        String url = ipv4+"paradasParaApp/"+seleccionLin;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {

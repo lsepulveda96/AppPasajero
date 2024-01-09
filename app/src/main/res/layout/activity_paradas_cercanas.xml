@@ -2,6 +2,184 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/fondo_mapa_gris"
+    tools:context="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity">
+
+
+    <TextView
+        android:id="@+id/tv_network"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#D83F3F"
+        android:fontFamily="@font/bebasneue_regular"
+        android:gravity="center"
+        android:text="sin conexion"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="30dp"
+        android:background="@drawable/btn_follow_style"
+        android:elevation="12dp">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="2000dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tvSeleccionRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:fontFamily="@font/alata"
+        android:text="Seleccionar radio paradas:"
+        android:textSize="16sp" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textImputLayoutRadio"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_below="@+id/tvSeleccionRadio"
+            android:layout_marginTop="10dp"
+            android:theme="@style/Theme.MaterialComponents.Light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/persona_parada_icon"
+            >
+<!--            app:helperText="*Requerido"-->
+<!--            app:helperTextTextColor="#f00"-->
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteRadio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:hint="Radio (en Mts)"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+<!--    <Spinner-->
+<!--        android:id="@+id/spinnerItemSeleccionRadio"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_below="@+id/tvSeleccionRadio"-->
+<!--        android:layout_marginStart="50dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_marginEnd="50dp"-->
+<!--        android:spinnerMode="dialog"-->
+<!--        android:background="@drawable/spinner_selector"/>-->
+
+    <TextView
+        android:id="@+id/tvSeleccionParadas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/textImputLayoutRadio"
+        android:fontFamily="@font/alata"
+        android:text="Seleccionar linea:"
+        android:textAllCaps="false"
+        android:textSize="16sp" />
+
+<!--    <Spinner
+        android:id="@+id/spinnerItemSeleccionLinea"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/tvSeleccionParadas"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="50dp"
+        android:spinnerMode="dialog"
+        android:background="@drawable/spinner_selector" />-->
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textImputLayoutLinea"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_below="@+id/tvSeleccionParadas"
+            android:layout_marginTop="10dp"
+            android:theme="@style/Theme.MaterialComponents.Light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/line_bus_icon"
+            >
+<!--            app:helperText="*Requerido"-->
+<!--            app:helperTextTextColor="#f00"-->
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteLinea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:hint="Linea"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/btnBuscarParadas"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/fondo_contorno_amarillo"
+        android:fontFamily="@font/alata"
+        android:text="Buscar paradas cercanas"
+        android:textSize="16sp" />
+
+    </RelativeLayout>
+
+
+
+
+    <TextView
+        android:id="@+id/tvUbicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/alata"
+        android:text="Ubicacion GPS!"
+        android:gravity="center"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
+
+<!--
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/main_gradient_color"
     tools:context="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity">
 
@@ -132,4 +310,4 @@
 
 
 
-</RelativeLayout>
+</RelativeLayout>-->

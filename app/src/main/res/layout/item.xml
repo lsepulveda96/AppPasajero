@@ -19,7 +19,7 @@
             android:layout_height="50dp"
             android:scaleType="centerCrop"
             android:layout_marginRight="4dp"
-            android:background="@drawable/busstopicon"/>
+            android:background="@drawable/bus_icon_yellow"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,11 +29,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+                android:fontFamily="@font/bebasneue_regular"
                 android:textSize="16sp"/>
             <TextView
                 android:id="@+id/tvDescripcion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/bebasneue_regular"
                 android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>

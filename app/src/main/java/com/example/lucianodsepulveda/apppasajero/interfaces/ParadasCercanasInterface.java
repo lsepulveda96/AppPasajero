@@ -28,6 +28,7 @@ public interface ParadasCercanasInterface {
         //se comunica con el modelo, se ejecuta en el presenter
         void obtenerPermisos();
 
+        // este metodo ya no iria, se puede borrar
         String obtenerRadio(String seleccionRadio);
 
         Double obtenerDistancia(double latInicial, double lngInicial, double latFinal, double lngFinal);

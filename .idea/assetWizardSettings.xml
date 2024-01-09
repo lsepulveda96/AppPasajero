@@ -37,7 +37,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\PC\Documents\AndroidStudioProjects\AppPasajero\app\src\main\res\drawable\btn_dropdown_pressed.png" />
+                                                <entry key="imagePath" value="C:\Users\PC\Documents\AndroidStudioProjects\AppPasajero\app\src\main\res\drawable\line_bus_icon.png" />
                                                 <entry key="opacityPercent" value="60" />
                                               </map>
                                             </option>
@@ -71,8 +71,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\PC\Documents\AndroidStudioProjects\AppPasajero\app\src\main\res\drawable\btn_dropdown_pressed.png" />
-                                      <entry key="outputName" value="btn_dropdown_pressed" />
+                                      <entry key="imageAsset" value="C:\Users\PC\Documents\AndroidStudioProjects\AppPasajero\app\src\main\res\drawable\line_bus_icon.png" />
+                                      <entry key="outputName" value="line_bus_icon" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -100,8 +100,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\PC\Desktop\Para manual usuario app mobile\logo_stcu.png" />
-                                                <entry key="scalingPercent" value="78" />
+                                                <entry key="imagePath" value="C:\Users\PC\Documents\AndroidStudioProjects\AppColectivo\app\src\main\res\drawable\logo_stcu_amarillo.png" />
+                                                <entry key="scalingPercent" value="81" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -302,6 +302,11 @@
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>

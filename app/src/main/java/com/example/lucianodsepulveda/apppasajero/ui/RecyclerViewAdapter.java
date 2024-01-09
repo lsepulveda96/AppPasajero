@@ -34,12 +34,9 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder{
     private ImageView imgItem;
     private TextView tvTitulo;
     private TextView tvDescripcion;
-//        private ItemList itemDetail;
-
 
         public RecyclerViewHolder(View itemView) {
         super(itemView);
-//        txtCodigo = (TextView) itemView.findViewById(R.id.txtCodigo);
 
             imgItem = itemView.findViewById(R.id.imgItem);
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
@@ -84,7 +81,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private ImageView imgItem;
         private TextView tvTitulo;
         private TextView tvDescripcion;
-//        private ItemList itemDetail;
 
         SharedPreferences preferences;
 
@@ -110,7 +106,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         // muestra en pantalla la informacion
         public void setmItem(String item){
             mItem = item;
-            mItem = mItem.replaceAll("\"", ""); // saca los tildes
+//            mItem = mItem.replaceAll("\"", ""); // saca los tildes
 
             String titulo = "";
             String descripcion = "";
@@ -124,10 +120,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     titulo = textSplit[i];
                 }
             }
-
-//            txtCodigo.setText(mItem);
-
-
 
             String tituloDetail = "";
             String descripDetail = "";
@@ -152,11 +144,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             }
 
-
-
-//            tvTitulo.setText(tituloDetail);
-//            tvDescripcion.setText(descripcionDetail);
-
             tvTitulo.setText(tituloDetail);
             tvDescripcion.setText(descripDetail);
 
@@ -171,6 +158,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             preferences = ma2.getSharedPreferences("Codigos", Context.MODE_PRIVATE);
             Map<String, ?> allEntries = preferences.getAll();
             for(Map.Entry<String,?> entry : allEntries.entrySet()){
+
+                System.out.println(" la informacion que esta queriendo machear" + entry.getKey());
+                System.out.println(" la informacion que esta queriendo machear2" + mItem);
+
                 if(entry.getKey().equals( mItem )){
                    codRes = entry.getValue().toString();
                 }
@@ -200,7 +191,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
 
             System.out.println("informacion en favoritos, datos del llamado llegada cole api: " + idLineaQr +", "+ idRecorridoQr+", "+ idParadaQr);
-            // el llamado anda, pero no trae nada en responseArriboColectivo (problema de visibilidad, lo llama dentro de ese metodo con showArriboCole)
+            // el llamado anda, pero no traia nada en responseArriboColectivo (problema de visibilidad, resuelto: lo llama dentro de ese metodo con showArriboCole)
             // recibe la respuesta en paradas favoritas en el metodo showArriboCole y lo envia al recycler view con sharedPreference
             responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
 
@@ -260,19 +251,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // esto anda
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.item,parent,false);
         ViewHolder vh = new ViewHolder(itemView, paradasFavoritasActivity,mf);
         return vh;
-
-        /*View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_view, parent, false);
-        return new RecyclerHolder(view);*/
-
-       /* LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View itemView = inflater.inflate(R.layout.item_list_view, parent, false);
-        ViewHolder vh = new ViewHolder(itemView, paradasFavoritasActivity,mf);
-        return vh;*/
     }
 
     @Override

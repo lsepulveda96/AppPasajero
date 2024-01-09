@@ -213,7 +213,8 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
 
     @Override
     public void showArriboColectivo(String result) {
-                SharedPreferences sharedPreferencesArriboCole;
+        System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder: " + result );
+        SharedPreferences sharedPreferencesArriboCole;
         sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
         SharedPreferences.Editor myEditor = sharedPreferencesArriboCole.edit();
         myEditor.putString("TiempoArribo", result);

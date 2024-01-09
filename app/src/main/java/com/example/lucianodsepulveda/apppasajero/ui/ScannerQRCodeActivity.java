@@ -46,7 +46,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private Button btnFav, btnAtras;
+    private Button btnGuardarCodigo, btnAtras;
     private boolean isEmail = false, scannerIniciado = false;
     private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseArriboColectivo = "", intentData = "";
     private int control;
@@ -130,7 +130,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
         tvNetwork = (TextView) findViewById(R.id.tv_network);
         txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
-        btnFav = findViewById(R.id.btnFav);
+        btnGuardarCodigo = findViewById(R.id.btnGuardarCodigo);
         btnAtras = findViewById(R.id.btnAtras);
 
         btnAtras.setOnClickListener(new View.OnClickListener() {
@@ -142,22 +142,23 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
             }
         });
 
-        btnFav.setEnabled( false );
-        btnFav.setOnClickListener(new View.OnClickListener() {
+        btnGuardarCodigo.setEnabled( false );
+        btnGuardarCodigo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 SharedPreferences preferences = getApplicationContext().getSharedPreferences("Codigos", Context.MODE_PRIVATE);
-                boolean bandera = true;
+                boolean codigoExiste = false;
 
                 Map<String, ?> allEntries = preferences.getAll();
                 for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
                     if (getData().equals(entry.getValue().toString())) {
-                        bandera = false;
+                        codigoExiste = true;
                     }
                 }
 
-                if (bandera) {
+                // si el codigo no existe, lo guarda
+                if (!codigoExiste) {
                     SharedPreferences.Editor myEditor = preferences.edit();
                     myEditor.putString(getData(), getData()); // para que guarde el mismo valor como clave ( que sea unica );
                     myEditor.commit();
@@ -253,7 +254,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
                                 setData(intentData);
 
                                 if(control == 0) {
-                                    btnFav.setEnabled( true );
+                                    btnGuardarCodigo.setEnabled( true );
 
                                     String codigo = getData();
                                     String[] nuevoc = codigo.split(",");
@@ -285,6 +286,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
                                         }
                                     }
 
+//                                    if(denomLineaQr || direccionParadaQr)
                                     final String codShow = denomLineaQr + " - "  + direccionParadaQr;
                                     txtBarcodeValue.setText(codShow);
 
