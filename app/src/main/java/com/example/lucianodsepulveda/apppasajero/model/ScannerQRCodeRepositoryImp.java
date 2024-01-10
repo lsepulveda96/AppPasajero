@@ -21,7 +21,7 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
     private String responseArriboColectivo = "";
 //    public static String ipv4 = "http://stcu.mdn.unp.edu.ar:50002/stcu_app";
-    public static String ipv4 = "http://192.168.0.103:50000/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.104:50000/v1/mobile/";
     RequestQueue requestQueue;
 
 
@@ -71,9 +71,9 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
         requestQueue = Volley.newRequestQueue(mContext);
 
-        System.out.println("informacion: datos que envia qr. idLineaQr" + idLineaString);
-        System.out.println("informacion: datos que envia qr. idRecorridoQr" + idRecorridoString);
-        System.out.println("informacion: datos que envia qr. idParadaQr" + idParadaString);
+        System.out.println("informacion: datos que envia qr. idLineaQr: " + idLineaString);
+        System.out.println("informacion: datos que envia qr. idRecorridoQr: " + idRecorridoString);
+        System.out.println("informacion: datos que envia qr. idParadaQr: " + idParadaString);
 
 //        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
 //                response -> responseArriboColectivo = response,

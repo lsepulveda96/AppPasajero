@@ -45,7 +45,7 @@
 
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
 
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.ParadasCercanasActivity"
@@ -55,6 +55,9 @@
         </activity>
 
 
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
         <activity
             android:name="com.example.lucianodsepulveda.apppasajero.ui.ScannerQRCodeActivity"
             android:label="@string/title_activity_scannerQRCode">
@@ -77,9 +80,7 @@
             android:value="AIzaSyBLiFAHJUK24zbN9ytBsed6-HgGP2GkTlI"/>
            <!-- android:value="@string/google_maps_key" /> -->
 
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

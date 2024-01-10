@@ -152,92 +152,102 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View view){
 
-            String codigo = mItem;
-            String codRes = "";
+            if(ma2.activeNetwork != null){
+                //internet work
 
-            preferences = ma2.getSharedPreferences("Codigos", Context.MODE_PRIVATE);
-            Map<String, ?> allEntries = preferences.getAll();
-            for(Map.Entry<String,?> entry : allEntries.entrySet()){
+                String codigo = mItem;
+                String codRes = "";
 
-                System.out.println(" la informacion que esta queriendo machear" + entry.getKey());
-                System.out.println(" la informacion que esta queriendo machear2" + mItem);
+                preferences = ma2.getSharedPreferences("Codigos", Context.MODE_PRIVATE);
+                Map<String, ?> allEntries = preferences.getAll();
+                for(Map.Entry<String,?> entry : allEntries.entrySet()){
 
-                if(entry.getKey().equals( mItem )){
-                   codRes = entry.getValue().toString();
-                }
-            }
+                    System.out.println(" la informacion que esta queriendo machear" + entry.getKey());
+                    System.out.println(" la informacion que esta queriendo machear2" + mItem);
 
-            String[] nuevoc = codRes.split(",");
-
-            for(int i=0;i<nuevoc.length;i++) {
-                if (i == 0) {
-                    idLineaQr = nuevoc[i];
-                }
-                if (i == 1) {
-                    denomLineaQr = nuevoc[i];
-                }
-                if (i == 2) {
-                    idParadaQr = nuevoc[i];
-                }
-                if (i == 3) {
-                    direccionParadaQr = nuevoc[i];
-                }
-                if (i == 4) {
-                    idRecorridoQr = nuevoc[i];
-                }
-                if (i == 5) {
-                    denomRecorridoQr = nuevoc[i];
-                }
-            }
-
-            System.out.println("informacion en favoritos, datos del llamado llegada cole api: " + idLineaQr +", "+ idRecorridoQr+", "+ idParadaQr);
-            // el llamado anda, pero no traia nada en responseArriboColectivo (problema de visibilidad, resuelto: lo llama dentro de ese metodo con showArriboCole)
-            // recibe la respuesta en paradas favoritas en el metodo showArriboCole y lo envia al recycler view con sharedPreference
-            responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
-
-            dialog2 = new ProgressDialog( ma2 );
-            dialog2.setMessage( "Buscando el proximo colectivo.." );
-            dialog2.show();
-
-
-            crearDialogo(getPosition(), mItem);
-            Log.d(TAG, "onClick" + getPosition() + " " + mItem);
-            final Handler handler = new Handler();
-            final Runnable r = new Runnable(){
-                public void run(){
-
-                    dialog2.cancel();
-
-                    String codigoRespArriboCole = "";
-                    String resp1 = "";
-
-                    // obtiene el tiempo de arribo desde getSharedPreference
-                    preferencesArriboCole = ma2.getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
-                    Map<String, ?> allEntries = preferencesArriboCole.getAll();
-                    for(Map.Entry<String,?> entry : allEntries.entrySet()){
-                        if (entry.getKey().equals("TiempoArribo"))
-                            //System.out.println("La key dentro del recycler view: " + entry.getValue().toString());
-                            codigoRespArriboCole = entry.getValue().toString();
-                    }
-
-                    System.out.println("informacion: la respuesta que trae la consulta tiempo de arribo desde favoritos +++++++++++++: " + codigoRespArriboCole + " fin+++");
-
-                    //resp1 = responseArriboColectivo.replaceAll( "\"","" );
-                    resp1 = codigoRespArriboCole.replaceAll( "\"","" );
-
-                    if(resp1.equals("")) {
-                        Toast t2 = Toast.makeText( ma2, "No es posible realizar la consulta", Toast.LENGTH_SHORT );
-                        t2.show();
-                    }else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ma2);
-                        builder.setTitle( "Arribo proximo colectivo:" );
-                        builder.setMessage( resp1 );
-                        Dialog dialog = builder.create();
-                        dialog.show();
+                    if(entry.getKey().equals( mItem )){
+                        codRes = entry.getValue().toString();
                     }
                 }
-            };
-            handler.postDelayed(r,4000);
+
+                String[] nuevoc = codRes.split(",");
+
+                for(int i=0;i<nuevoc.length;i++) {
+                    if (i == 0) {
+                        idLineaQr = nuevoc[i];
+                    }
+                    if (i == 1) {
+                        denomLineaQr = nuevoc[i];
+                    }
+                    if (i == 2) {
+                        idParadaQr = nuevoc[i];
+                    }
+                    if (i == 3) {
+                        direccionParadaQr = nuevoc[i];
+                    }
+                    if (i == 4) {
+                        idRecorridoQr = nuevoc[i];
+                    }
+                    if (i == 5) {
+                        denomRecorridoQr = nuevoc[i];
+                    }
+                }
+
+                System.out.println("informacion en favoritos, datos del llamado llegada cole api: " + idLineaQr +", "+ idRecorridoQr+", "+ idParadaQr);
+                // el llamado anda, pero no traia nada en responseArriboColectivo (problema de visibilidad, resuelto: lo llama dentro de ese metodo con showArriboCole)
+                // recibe la respuesta en paradas favoritas en el metodo showArriboCole y lo envia al recycler view con sharedPreference
+                responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
+
+                dialog2 = new ProgressDialog( ma2 );
+                dialog2.setMessage( "Buscando el proximo colectivo.." );
+                dialog2.show();
+
+
+                crearDialogo(getPosition(), mItem);
+                Log.d(TAG, "onClick" + getPosition() + " " + mItem);
+                final Handler handler = new Handler();
+                final Runnable r = new Runnable(){
+                    public void run(){
+
+                        dialog2.cancel();
+
+                        String codigoRespArriboCole = "";
+                        String resp1 = "";
+
+                        // obtiene el tiempo de arribo desde getSharedPreference
+                        preferencesArriboCole = ma2.getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
+                        Map<String, ?> allEntries = preferencesArriboCole.getAll();
+                        for(Map.Entry<String,?> entry : allEntries.entrySet()){
+                            if (entry.getKey().equals("TiempoArribo"))
+                                //System.out.println("La key dentro del recycler view: " + entry.getValue().toString());
+                                codigoRespArriboCole = entry.getValue().toString();
+                        }
+
+                        System.out.println("informacion: la respuesta que trae la consulta tiempo de arribo desde favoritos +++++++++++++: " + codigoRespArriboCole + " fin+++");
+
+                        //resp1 = responseArriboColectivo.replaceAll( "\"","" );
+                        resp1 = codigoRespArriboCole.replaceAll( "\"","" );
+
+                        if(resp1.equals("")) {
+                            Toast t2 = Toast.makeText( ma2, "No es posible realizar la consulta", Toast.LENGTH_SHORT );
+                            t2.show();
+                        }else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ma2);
+                            builder.setTitle( "Arribo proximo colectivo:" );
+                            builder.setMessage( resp1 );
+                            Dialog dialog = builder.create();
+                            dialog.show();
+                        }
+                    }
+                };
+                handler.postDelayed(r,4000);
+
+
+
+            }else{
+                Toast.makeText(ma2, "Conectese a una red para continuar", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
         private void crearDialogo(int position, String mItem) {

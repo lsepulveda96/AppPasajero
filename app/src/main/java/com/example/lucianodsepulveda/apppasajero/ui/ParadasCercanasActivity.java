@@ -471,4 +471,9 @@ public class ParadasCercanasActivity extends Activity implements ParadasCercanas
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcastReceiver);
+    }
 }

@@ -18,7 +18,7 @@ import org.json.JSONObject;
 public class ParadasFavoritasRepositoryImp implements ParadasFavoritasRepository {
     ParadasFavoritasInterface.Presenter presenter;
     Context mContext;
-    public static String ipv4 = "http://192.168.0.103:50000/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.104:50000/v1/mobile/";
     private String responseArriboColectivo = "";
 
     //ScannerQRCodeRepository scannerQRCodeRepository;

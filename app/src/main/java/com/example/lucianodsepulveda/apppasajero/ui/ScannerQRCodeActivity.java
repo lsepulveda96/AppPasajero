@@ -42,7 +42,7 @@ import java.util.Map;
 public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInterface.View {
 
     private SurfaceView surfaceView;
-    private TextView txtBarcodeValue, tvNetwork;
+    private TextView barcodeText, tvNetwork;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
@@ -51,6 +51,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseArriboColectivo = "", intentData = "";
     private int control;
     private ProgressDialog dialog2;
+    IntentFilter intentFilter;
 
 
     ScannerQRCodeInterface.Presenter presenter;
@@ -100,7 +101,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
             }
         } else {
             tvNetwork.setVisibility(View.VISIBLE);
-            Toast.makeText(getApplicationContext(), "internet apagado, debe conectarse a una red para continuar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Conectese a una red para continuar", Toast.LENGTH_SHORT).show();
             surfaceView.setActivated(false);
 //          setVisibility(View.GONE);
 //            cameraSource.stop(); // para no permitirle escanear cuando no haya internet
@@ -119,16 +120,13 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         initViews();
-
-
     }
 
     private void initViews() {
         tvNetwork = (TextView) findViewById(R.id.tv_network);
-        txtBarcodeValue = findViewById(R.id.txtBarcodeValue);
+        barcodeText = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
         btnGuardarCodigo = findViewById(R.id.btnGuardarCodigo);
         btnAtras = findViewById(R.id.btnAtras);
@@ -174,12 +172,264 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
 
 
         //necesario para comprobar internet en tiempo real
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mBroadcastReceiver, intentFilter);
         //
     }
 
     private void initialiseDetectorsAndSources() {
+
+        //para saber si fue iniciado por primera vez el scanner, para utilizar el onPause de la camara
+        scannerIniciado = true;
+
+        Toast.makeText(getApplicationContext(), "Scanner Codigo QR iniciado", Toast.LENGTH_SHORT).show();
+        control = 0;
+
+        barcodeDetector = new BarcodeDetector.Builder(this)
+                .setBarcodeFormats(Barcode.ALL_FORMATS)
+                .build();
+
+        cameraSource = new CameraSource.Builder(this, barcodeDetector)
+                .setRequestedPreviewSize(1920, 1080)
+                .setAutoFocusEnabled(true) //you should add this feature
+                .build();
+
+        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                try {
+                    if (ActivityCompat.checkSelfPermission(ScannerQRCodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        cameraSource.start(surfaceView.getHolder());
+                    } else {
+                        ActivityCompat.requestPermissions(ScannerQRCodeActivity.this, new
+                                String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                cameraSource.stop();
+            }
+        });
+
+
+        //reveer funcion, borrar cosas que se utilizaban en la funcion de ejemplo
+
+        barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
+            @Override
+            public void release() {
+//                Toast.makeText(getApplicationContext(), "Scanner Codigo QR detenido", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void receiveDetections(Detector.Detections<Barcode> detections) {
+                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+                if (barcodes.size() != 0) {
+                    barcodeText.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            if (barcodes.valueAt(0).displayValue != null) {
+                                intentData = barcodes.valueAt(0).displayValue;
+                                setData(intentData);
+                                if (control == 0) {
+
+                                    String codigo = getData();
+                                    String codigoSinComillas = "";
+                                    codigoSinComillas = codigo.replaceAll("\"", ""); // saca los tildes
+                                    String[] nuevoc = codigoSinComillas.split(",");
+
+
+                                    for (int i = 0; i < nuevoc.length; i++) {
+                                        if (i == 0) {
+                                            idLineaQr = nuevoc[i];
+                                        }
+                                        if (i == 1) {
+                                            denomLineaQr = nuevoc[i];
+                                        }
+                                        if (i == 2) {
+                                            idParadaQr = nuevoc[i];
+                                        }
+                                        if (i == 3) {
+                                            direccionParadaQr = nuevoc[i];
+                                        }
+                                        if (i == 4) {
+                                            idRecorridoQr = nuevoc[i];
+                                        }
+                                        if (i == 5) {
+                                            denomRecorridoQr = nuevoc[i];
+                                        }
+                                    }
+
+                                    if (denomLineaQr == null || direccionParadaQr == null || denomRecorridoQr == null) {
+                                        barcodeText.setText("Codigo invalido!");
+                                    } else {
+
+                                        // si codigo es valido, continua
+
+                                        btnGuardarCodigo.setEnabled(true);
+                                        final String codShow = denomLineaQr + " - " + direccionParadaQr;
+                                        barcodeText.setText(codShow);
+
+                                        System.out.println("informacion, los datos que envia para hacer el request " + idLineaQr + " - " + idRecorridoQr + " - " + idParadaQr);
+                                        responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
+                                        // este metodo llama a showArriboColectivo. no traia la respuesta sino
+
+                                        dialog2 = new ProgressDialog(ScannerQRCodeActivity.this);
+                                        dialog2.setTitle("Codigo detectado");
+                                        dialog2.setMessage("Leyendo información..");
+                                        dialog2.show();
+
+
+                                        final Handler handler = new Handler();
+                                        final Runnable r = new Runnable() {
+                                            public void run() {
+
+                                                System.out.println("+++++++++++++++++++++++++++++++");
+                                                System.out.println("informacion de lo que traer arribo colectivo" + responseArriboColectivo);
+                                                System.out.println("+++++++++++++++++++++++++++++++");
+
+
+                                                dialog2.cancel();
+                                                String resp1 = "";
+                                                resp1 = getResponseArriboColectivo().replaceAll("\"", "");
+
+                                                if (resp1.equals("")) {
+                                                    Toast t2 = Toast.makeText(getApplicationContext(), "No es posible realizar la consulta", Toast.LENGTH_SHORT);
+                                                    t2.show();
+                                                } else {
+
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(ScannerQRCodeActivity.this);
+                                                    builder.setTitle("Arribo proximo colectivo:");
+                                                    builder.setMessage(resp1);
+                                                    builder.setPositiveButton("Guardar codigo", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                            //TODO reemplaza boton fav
+                                                            SharedPreferences preferences = getApplicationContext().getSharedPreferences("Codigos", Context.MODE_PRIVATE);
+                                                            boolean codigoNoExiste = true;
+
+                                                            Map<String, ?> allEntries = preferences.getAll();
+                                                            for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                                                                if (codShow.equals(entry.getKey())) {
+                                                                    codigoNoExiste = false;
+                                                                }
+                                                            }
+
+                                                            // porque no habia otro codigo igual
+                                                            if (codigoNoExiste) {
+                                                                SharedPreferences.Editor myEditor = preferences.edit();
+                                                                myEditor.putString(codShow, getData());
+                                                                myEditor.commit();
+                                                                Toast t5 = Toast.makeText(getApplicationContext(), "Guardado con exito!", Toast.LENGTH_SHORT);
+                                                                t5.show();
+                                                            } else {
+                                                                Toast t6 = Toast.makeText(getApplicationContext(), "El codigo ya existe!", Toast.LENGTH_SHORT);
+                                                                t6.show();
+                                                            }
+
+                                                            finish();
+                                                            //TODO fin boton fav
+                                                        }
+                                                    });
+
+                                                    builder.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            finish();
+                                                        }
+                                                    });
+
+                                                    Dialog dialog = builder.create();
+                                                    dialog.show();
+                                                    //TODO fin cartel
+                                                }
+                                            }
+                                        };
+                                        handler.postDelayed(r, 5000);
+
+
+
+                                    }// fin else codigo invalido
+
+                                } // fin control
+                                control++;
+                            } else {
+                                // si el codigo es null
+                                barcodeText.removeCallbacks(null);
+                                intentData = barcodes.valueAt(0).displayValue;
+                                System.out.println("informacion: lo que trae intent data si es null: " + intentData);
+                                barcodeText.setText("Codigo invalido!");
+                            }
+                        }
+
+                    });
+
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        cameraSource.release();
+        cameraSource.stop();
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initialiseDetectorsAndSources();
+        getApplicationContext().registerReceiver(mBroadcastReceiver,intentFilter);
+    }
+
+    public void setData(String data) {
+        this.dataC = data;
+    }
+
+    public String getData(){
+        return this.dataC;
+    }
+
+    public String getResponseArriboColectivo(){
+        return this.responseArriboColectivo;
+    }
+
+    @Override
+    public void showArriboColectivo(String result) {
+        responseArriboColectivo = result;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
+    }
+}
+
+
+
+/*
+// backup codigo que anda
+  private void initialiseDetectorsAndSources() {
 
         //para saber si fue iniciado por primera vez el scanner, para utilizar el onPause de la camara
         scannerIniciado = true;
@@ -377,39 +627,4 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
         });
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        cameraSource.release();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        initialiseDetectorsAndSources();
-    }
-
-    public void setData(String data) {
-        this.dataC = data;
-    }
-
-    public String getData(){
-        return this.dataC;
-    }
-
-    public String getResponseArriboColectivo(){
-        return this.responseArriboColectivo;
-    }
-
-    @Override
-    public void showArriboColectivo(String result) {
-        responseArriboColectivo = result;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item){
-        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivityForResult(myIntent, 0);
-        return true;
-    }
-}
+ */

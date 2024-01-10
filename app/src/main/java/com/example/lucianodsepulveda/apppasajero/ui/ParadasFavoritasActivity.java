@@ -49,6 +49,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     SwipeRefreshLayout swipeRefreshLayout;
     TextView tvNet, tvAccess, tvNetwork;
     private String responseArriboColectivo = "";
+    NetworkInfo activeNetwork;
 
     List<Parada> listaParadas = new ArrayList<Parada>();
 
@@ -65,21 +66,21 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     //necesario para comprobar internet en tiempo real
     private void checkStatus(){
 
-
-        NetworkInfo activeNetwork = presenter.isNetAvailable();
+        activeNetwork = presenter.isNetAvailable();
         if (null != activeNetwork) {
 
             switch (activeNetwork.getType()){
-                case ConnectivityManager.TYPE_WIFI:Toast.makeText(getApplicationContext(),"wifi encenidido", Toast.LENGTH_SHORT).show();
-                    tvNetwork.setVisibility(View.GONE);
-                    break;
-                case ConnectivityManager.TYPE_MOBILE:Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                case ConnectivityManager.TYPE_WIFI:
+                case ConnectivityManager.TYPE_MOBILE:
+//                    Toast.makeText(getApplicationContext(),"mobile encenidido", Toast.LENGTH_SHORT).show();
+                    //                    Toast.makeText(getApplicationContext(),"wifi encenidido", Toast.LENGTH_SHORT).show();
                     tvNetwork.setVisibility(View.GONE);
                     break;
             }
         }else {
             tvNetwork.setVisibility(View.VISIBLE);
-            Toast.makeText(getApplicationContext(),"internet apagado", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(),"Internet apagado", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -99,17 +100,11 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
 
 
     public void initViews() {
-//        btnScanBarcode = findViewById(R.id.btnScanBarcode);
-//        btnScanBarcode.setOnClickListener(this);
         listaParadasAdapter = (ListView) findViewById(R.id.lvFav);
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
 //        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-//        tvNet = (TextView)findViewById(R.id.tv_net);
-//        tvAccess = (TextView)findViewById(R.id.tv_access);
         tvNetwork = (TextView)findViewById(R.id.tv_network);
 
-
-        //idea -- List<Parada> listaParadas = getListaParadas();
         sharedPreferences = getApplicationContext().getSharedPreferences("Codigos", Context.MODE_PRIVATE);
         sharedPreferencesEditor = sharedPreferences.edit();
         Map<String, ?> allEntries = sharedPreferences.getAll();
@@ -118,7 +113,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
             listaParadas.add(new Parada(entry.getKey()));
         }
 
-        recyclerView = (RecyclerView) findViewById(R.id.rv);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -230,4 +225,9 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mBroadcastReceiver);
+    }
 }
