@@ -226,8 +226,10 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
         unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
     }
+
+
 }

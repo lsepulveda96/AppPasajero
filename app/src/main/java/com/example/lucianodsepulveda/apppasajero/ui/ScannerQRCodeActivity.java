@@ -389,9 +389,9 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
         unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
     }
 
     @Override
