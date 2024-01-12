@@ -1,5 +1,6 @@
 package com.example.lucianodsepulveda.apppasajero.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.NetworkInfo;
 
@@ -14,12 +15,12 @@ public class ParadasFavoritasPresenter implements ParadasFavoritasInterface.Pres
     //private ParadasFavoritasInterface.Model model;
     private ParadasFavoritasInterface.Interactor interactor;
 
-    public ParadasFavoritasPresenter(ParadasFavoritasInterface.View view, Context mContext){
+    public ParadasFavoritasPresenter(ParadasFavoritasInterface.View view, Context mContext, Activity mActivity){
         this.view = view;
         //nuevo model
         //model = new ParadasFavoritasModel(this, mContext);
 
-        interactor = new ParadasFavoritasInteractor(this, mContext);
+        interactor = new ParadasFavoritasInteractor(this, mContext, mActivity);
     }
 
 

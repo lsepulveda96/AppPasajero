@@ -88,7 +88,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new ParadasFavoritasPresenter(this, this);
+        presenter = new ParadasFavoritasPresenter(this, this, this);
 
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -208,8 +208,10 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
 
     @Override
     public void showArriboColectivo(String result) {
+
         System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder: " + result );
         SharedPreferences sharedPreferencesArriboCole;
+
         sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
         SharedPreferences.Editor myEditor = sharedPreferencesArriboCole.edit();
         myEditor.putString("TiempoArribo", result);

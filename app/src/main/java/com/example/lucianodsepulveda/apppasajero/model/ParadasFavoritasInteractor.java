@@ -1,5 +1,6 @@
 package com.example.lucianodsepulveda.apppasajero.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.NetworkInfo;
 
@@ -10,8 +11,8 @@ import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInte
 public class ParadasFavoritasInteractor extends AppCompatActivity implements ParadasFavoritasInterface.Interactor {
 
     private final ParadasFavoritasRepository paradasFavoritasRepository;
-    public ParadasFavoritasInteractor(ParadasFavoritasInterface.Presenter presenter, Context mContext) {
-        paradasFavoritasRepository = new ParadasFavoritasRepositoryImp(presenter, mContext);
+    public ParadasFavoritasInteractor(ParadasFavoritasInterface.Presenter presenter, Context mContext, Activity mActivity) {
+        paradasFavoritasRepository = new ParadasFavoritasRepositoryImp(presenter, mContext, mActivity);
     }
 
 

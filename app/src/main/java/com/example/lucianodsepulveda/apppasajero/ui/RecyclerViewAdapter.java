@@ -59,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.paradasFavoritasActivity = paradasFavoritasAcitivity;
         this.mf = mainFragment;
         this.responseArriboColectivo = responseArriboColectivo;
-        presenter = new ParadasFavoritasPresenter(paradasFavoritasActivity, paradasFavoritasActivity);
+        presenter = new ParadasFavoritasPresenter(paradasFavoritasActivity, paradasFavoritasActivity, paradasFavoritasActivity);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -98,7 +98,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             tvTitulo = itemView.findViewById(R.id.tvTitulo);
             tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
 
-            presenter = new ParadasFavoritasPresenter(ma,ma);
+            presenter = new ParadasFavoritasPresenter(ma,ma,ma);
 
         }
 
@@ -196,6 +196,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 System.out.println("informacion en favoritos, datos del llamado llegada cole api: " + idLineaQr +", "+ idRecorridoQr+", "+ idParadaQr);
                 // el llamado anda, pero no traia nada en responseArriboColectivo (problema de visibilidad, resuelto: lo llama dentro de ese metodo con showArriboCole)
                 // recibe la respuesta en paradas favoritas en el metodo showArriboCole y lo envia al recycler view con sharedPreference
+
                 responseArriboColectivo = presenter.makeRequestLlegadaCole(idLineaQr, idRecorridoQr, idParadaQr);
 
                 dialog2 = new ProgressDialog( ma2 );

@@ -35,12 +35,9 @@ public class ParadasCercanasRepositoryImp implements ParadasCercanasRepository {
     ParadasCercanasInterface.Presenter presenter;
     Context mContext;
     Activity mActivity;
-    //public static String ipv4 = "http://stcu.mdn.unp.edu.ar:50002/stcu_app";
-    //public static String ipv4 = "http://localhost:50000/v1/mobile/test";
 
-    //public static String ipv4 = "http://127.0.0.1:50000/v1/mobile/test";
-
-    public static String ipv4 = "http://192.168.0.104:50000/v1/mobile/";
+   // public static String ipv4 = "http://192.168.0.104:50000/v1/mobile/";
+   public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
 
     private List<ParadaCercana> listaParadas;
     private ParadaCercana paradaCercana;

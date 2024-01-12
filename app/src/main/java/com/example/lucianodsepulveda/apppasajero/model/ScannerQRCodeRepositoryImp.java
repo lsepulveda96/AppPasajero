@@ -20,8 +20,9 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
     Context mContext;
 
     private String responseArriboColectivo = "";
-//    public static String ipv4 = "http://stcu.mdn.unp.edu.ar:50002/stcu_app";
-    public static String ipv4 = "http://192.168.0.104:50000/v1/mobile/";
+    //public static String ipv4 = "http://192.168.0.104:50000/v1/mobile/"; // antigua
+    public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
+
     RequestQueue requestQueue;
 
 
