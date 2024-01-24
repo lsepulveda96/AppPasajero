@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">App Pasajero</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_maps2">Map</string>
+    <string name="title_activity_maps">Paradas Cercanas</string>
+    <string name="title_activity_maps2">Paradas Cercanas</string>
     <!--<string name="app_name">Lector Codigo QR - STCU</string>-->
     <string name="take_barcode_picture">Tomar Foto Img Codigo QR</string>
     <string name="scan_barcode">Escanear Codigo QR</string>

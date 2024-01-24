@@ -52,6 +52,8 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     private int control;
     private ProgressDialog dialog2;
     IntentFilter intentFilter;
+    boolean onResumeCalled;
+
 
 
     ScannerQRCodeInterface.Presenter presenter;
@@ -115,6 +117,9 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        onResumeCalled = false;
+
         setContentView(R.layout.activity_scan_barcode);
         presenter = new ScannerQRCodePresenter(this, this);
 
@@ -397,8 +402,12 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     @Override
     protected void onResume() {
         super.onResume();
-        initialiseDetectorsAndSources();
-        getApplicationContext().registerReceiver(mBroadcastReceiver,intentFilter);
+
+        if(!onResumeCalled) {
+            initialiseDetectorsAndSources();
+            getApplicationContext().registerReceiver(mBroadcastReceiver, intentFilter);
+            this.onResumeCalled = true;
+        }
     }
 
     public void setData(String data) {

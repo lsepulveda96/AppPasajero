@@ -19,10 +19,10 @@ import org.json.JSONObject;
 public class ParadasFavoritasRepositoryImp implements ParadasFavoritasRepository {
 
     // ip local actual
-    //public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
 
     // ip remoto actual
-    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
+//    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
 
     ParadasFavoritasInterface.Presenter presenter;
     Context mContext;
