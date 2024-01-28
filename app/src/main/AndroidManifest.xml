@@ -78,14 +78,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBLiFAHJUK24zbN9ytBsed6-HgGP2GkTlI"/>
-           <!-- android:value="@string/google_maps_key" /> -->
-
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 

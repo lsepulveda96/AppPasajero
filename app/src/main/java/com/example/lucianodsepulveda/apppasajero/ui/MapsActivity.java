@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for(ParadaCercana item: paradas) {
             LatLng coordenada = new LatLng(item.getLatitud(), item.getLongitud()); // marcador por defecto
-            Marker marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title(item.getDireccion()).snippet("Distancia: " + item.getDistancia() +" metros").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_img)));
+            Marker marcador = mMap.addMarker(new MarkerOptions().position(coordenada).title(item.getDireccion()).snippet("Distancia: " + item.getDistancia() +" metros").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_amarilla_icon)));
             markers.add(marcador);
             tvLinea.setText("Paradas " + item.getLineaDenom());
         }

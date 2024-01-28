@@ -100,8 +100,9 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\PC\Documents\AndroidStudioProjects\AppColectivo\app\src\main\res\drawable\logo_stcu_amarillo.png" />
-                                                <entry key="scalingPercent" value="81" />
+                                                <entry key="imagePath" value="C:\Users\PC\Downloads\img_parada_amarilla_sin_fondo.png" />
+                                                <entry key="scalingPercent" value="98" />
+                                                <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -133,7 +134,8 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="icono_app_pasajero" />
+                                      <entry key="foregroundLayerName" value="parada_amarilla_img" />
+                                      <entry key="outputName" value="parada_amarilla" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -304,17 +306,17 @@
                             </entry>
                           </map>
                         </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
-                          </map>
-                        </option>
                       </PersistentState>
                     </value>
                   </entry>
                 </map>
               </option>
             </PersistentState>
+          </value>
+        </entry>
+        <entry key="vectorWizard">
+          <value>
+            <PersistentState />
           </value>
         </entry>
       </map>
