@@ -6,16 +6,21 @@ public interface ScannerQRCodeInterface {
 
     interface View{
         // la vista muestra el dato una vez calculado
-        void showArriboColectivo(String result);
+        void showArriboColectivo(String tiempoArriboColectivo, String latParadaActualColectivo, String lngParadaActualColectivo, String fechaParadaActualString);
+
+        void showUbicacionParadaPasajero(String ubicacionParadaPasajero);
     }
 
     interface Presenter{
         String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
+        String makeRequestGetUbicacionParadaRecorrido(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
         NetworkInfo isNetAvailable();
 
-        void showArriboColectivo(String result);
+        void showArriboColectivo(String tiempoArriboColectivo, String latParadaActualColectivo, String lngParadaActualColectivo, String fechaParadaActualString);
+
+        void showUbicacionParadaPasajero(String ubicacionParadaPasajero);
     }
 
    /* interface Model{
@@ -27,6 +32,8 @@ public interface ScannerQRCodeInterface {
         String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr );
 
         NetworkInfo isNetAvailable();
+
+        String makeRequestGetUbicacionParadaRecorrido(String idLineaQr, String idRecorridoQr, String idParadaQr);
     }
 
 }

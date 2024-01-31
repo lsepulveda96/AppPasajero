@@ -13,8 +13,9 @@
     <string name="title_activity_paradasCercanas">App pasajero - Paradas cercanas</string>
     <string name="title_activity_scannerQRCode">App pasajero - Scanner QR code</string>
     <string name="title_activity_paradasFavoritas">App pasajero - Paradas Favoritas</string>
+    <string name="title_activity_arribo_colectivo">Arribo proximo colectivo</string>
 
-<!--    <string-array name="radio_paradas">-->
+    <!--    <string-array name="radio_paradas">-->
 <!--        <item>5 cuadras</item>-->
 <!--        <item>10 cuadras</item>-->
 <!--        <item>20 cuadras</item>-->

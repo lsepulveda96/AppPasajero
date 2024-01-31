@@ -32,14 +32,32 @@ public class ScannerQRCodePresenter implements ScannerQRCodeInterface.Presenter 
     }
 
     @Override
+    public String makeRequestGetUbicacionParadaRecorrido(String idLineaQr, String idRecorridoQr, String idParadaQr) {
+        String respuesta = "";
+
+        if(view != null){
+            respuesta = interactor.makeRequestGetUbicacionParadaRecorrido(idLineaQr, idRecorridoQr, idParadaQr);
+        }
+
+        return respuesta;
+    }
+
+    @Override
     public NetworkInfo isNetAvailable() {
         return interactor.isNetAvailable();
     }
 
     @Override
-    public void showArriboColectivo(String result) {
+    public void showArriboColectivo(String tiempoArriboColectivo, String latParadaActualColectivo, String lngParadaActualColectivo, String fechaParadaActualString) {
         if(view!=null){
-            view.showArriboColectivo(result);
+            view.showArriboColectivo(tiempoArriboColectivo,  latParadaActualColectivo,  lngParadaActualColectivo,  fechaParadaActualString);
+        }
+    }
+
+    @Override
+    public void showUbicacionParadaPasajero(String ubicacionParadaPasajero) {
+        if(view!=null){
+            view.showUbicacionParadaPasajero(ubicacionParadaPasajero);
         }
     }
 

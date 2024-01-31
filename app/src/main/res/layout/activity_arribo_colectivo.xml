@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.lucianodsepulveda.apppasajero.ui.ArriboColectivoActivity">
+
+
+    <LinearLayout
+        android:id="@+id/ly_map"
+        android:layout_above="@+id/ly_btns"
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_follow_style"
+        android:stateListAnimator="@null"
+        android:elevation="10dp"
+        >
+
+        <fragment
+            android:id="@+id/map_arribo_colectivo"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="1dp"
+            tools:context=".ui.ArriboColectivoActivity"
+            tools:layout="@layout/fragment_map" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ly_btns"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_tiempoArriboColectivo"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+        </TextView>
+
+        <TextView
+            android:id="@+id/tv_fechaParadaActual"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/alata"
+            android:textSize="15dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+        </TextView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fondo_contorno_amarillo"
+            android:text="Volver a consultar"
+            android:fontFamily="@font/alata">
+        </Button>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

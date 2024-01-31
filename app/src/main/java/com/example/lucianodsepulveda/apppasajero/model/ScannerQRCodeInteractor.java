@@ -27,4 +27,8 @@ public class ScannerQRCodeInteractor extends AppCompatActivity implements Scanne
         return scannerQRCodeRepository.isNetAvailableLocal();
     }
 
+    @Override
+    public String makeRequestGetUbicacionParadaRecorrido(String idLineaQr, String idRecorridoQr, String idParadaQr) {
+        return scannerQRCodeRepository.makeRequestGetUbicacionParadaRecorrido(idLineaQr, idRecorridoQr, idParadaQr);
+    }
 }

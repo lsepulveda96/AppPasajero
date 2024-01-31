@@ -18,13 +18,16 @@ import org.json.JSONObject;
 public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
     // ip local actual
-   // public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
 
     // ip remoto actual
-    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
+//    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
+
+//    public static String ipv4 =  "http://192.168.1.5:50004/stcu2service/v1/mobile/";
 
     RequestQueue requestQueue;
-    private String responseArriboColectivo = "";
+    private String responseTiempoArriboColectivo = "";
+    private String ubicacionParadaPasajero = "";
     ScannerQRCodeInterface.Presenter presenter;
     Context mContext;
 
@@ -36,40 +39,6 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
     }
 
 
-// metodo antiguo
-/*    public String makeRequestLlegadaColeApi(String idLinea, String idParada){
-// hay q trabajar en este metodo. en conjunto con el de la app colectivo
-        String url = ipv4+"/rest/pasajeros/"+idLinea+"/"+idParada;
-
-        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
-                response -> responseArriboColectivo = response,
-                error -> Log.d( "ERROR",error.toString() )
-        );
-
-        requestQueue.add(getRequest);
-        return responseArriboColectivo;
-    }*/
-
-
-    // metodo previo a modif que no devuevle nada
-/*
-    public String makeRequestLlegadaColeApi(String idLineaString,  String idRecorridoString, String idParadaString){
-        String url = ipv4+"obtenerTiempoLlegadaCole/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
-
-        System.out.println("informacion: datos que envia qr. idLineaQr" + idLineaString);
-        System.out.println("informacion: datos que envia qr. idRecorridoQr" + idRecorridoString);
-        System.out.println("informacion: datos que envia qr. idParadaQr" + idParadaString);
-
-        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
-                response -> responseArriboColectivo = response,
-                error -> Log.d( "ERROR",error.toString() )
-        );
-
-
-        requestQueue.add(getRequest);
-        return responseArriboColectivo;
-    }*/
-
     public String makeRequestLlegadaColeApi(String idLineaString,  String idRecorridoString, String idParadaString){
         String url = ipv4+"obtenerTiempoLlegadaCole/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
 
@@ -79,10 +48,6 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
         System.out.println("informacion: datos que envia qr. idRecorridoQr: " + idRecorridoString);
         System.out.println("informacion: datos que envia qr. idParadaQr: " + idParadaString);
 
-//        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
-//                response -> responseArriboColectivo = response,
-//                error -> Log.d( "ERROR",error.toString() )
-//        );
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
@@ -90,9 +55,36 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            responseArriboColectivo =  response.getString("mensaje");
-                            presenter.showArriboColectivo(responseArriboColectivo);
+                            responseTiempoArriboColectivo =  response.getString("mensaje");
+
                             System.out.println("informacion del servidor ok : " + response);
+
+
+                            JSONObject colectivoRecorrido  = response.getJSONObject("data");
+
+                            String fechaParadaActualString = colectivoRecorrido.getString("fechaParadaActual");
+
+                            JSONObject paradaActual = new JSONObject(colectivoRecorrido.getString("paradaActual")).getJSONObject("coordenadas");
+                            String coordenadasParada = paradaActual.getString("coordinates");
+
+                            String coordenadasSinComillas = "";
+                            coordenadasSinComillas = coordenadasParada.replace("[", "").replace("]", ""); // saca corchetes
+                            String[] latLngParadaActualColectivo = coordenadasSinComillas.split(",");
+                            System.out.println("lat parada actual del colectivo : " + latLngParadaActualColectivo[0]);
+                            System.out.println("lng parada actual del colectivo : " + latLngParadaActualColectivo[1]);
+                            System.out.println("los datos de fechaParadaActualString: " + fechaParadaActualString);
+
+//                            Double latParadaColectivoActual = Double.valueOf(latLngParadaActualColectivo[0]);
+//                            Double lngParadaColectivoActual = Double.valueOf(latLngParadaActualColectivo[1]);
+
+//                            String[] datosArriboColectivo = new String[] {responseTiempoArriboColectivo, latLngParadaActualColectivo[0],
+//                                    latLngParadaActualColectivo[1], fechaParadaActualString};
+
+                            presenter.showArriboColectivo(responseTiempoArriboColectivo, latLngParadaActualColectivo[0], latLngParadaActualColectivo[1], fechaParadaActualString );
+
+                            //pasar al metodo por show arribo. como array de dos elementos, y ponerlo en mapa
+
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -105,26 +97,8 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
                 });
         requestQueue.add(jsonObjectRequest);
 
-        return responseArriboColectivo;
-//        return msjeResp[0];
+        return responseTiempoArriboColectivo;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -133,4 +107,44 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
         //para modo avion, networkinfo es null
         return connectivityManager.getActiveNetworkInfo();
     }
+
+
+
+
+    // crear metodo obtener ubicacion pasajero
+    public String makeRequestGetUbicacionParadaRecorrido(String idLineaString,  String idRecorridoString, String idParadaString){
+        String url = ipv4+"obtenerUbicacionParadaRecorrido/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
+
+
+        requestQueue = Volley.newRequestQueue(mContext);
+
+        System.out.println("informacion: datos que envia ubicacion pasajero. idParadaQr: " + idParadaString);
+        System.out.println("informacion: datos que envia ubicacion pasajero. idLineaString: " + idLineaString);
+        System.out.println("informacion: datos que envia ubicacion pasajero. idRecorridoString: " + idRecorridoString);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            ubicacionParadaPasajero =  response.getString("mensaje");
+                            presenter.showUbicacionParadaPasajero(ubicacionParadaPasajero);
+                            System.out.println("informacion del servidor ok obtenerUbicacionParadaRecorrido : " + response);
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("error get ubicacion parada pasajero: " + error.toString());
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+
+        return ubicacionParadaPasajero;
+    }
+
 }
