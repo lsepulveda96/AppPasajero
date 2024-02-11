@@ -5,7 +5,10 @@ import android.content.Context;
 import android.net.NetworkInfo;
 
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
+import com.example.lucianodsepulveda.apppasajero.model.ParadaCercana;
 import com.example.lucianodsepulveda.apppasajero.model.ParadasFavoritasInteractor;
+
+import java.util.List;
 
 public class ParadasFavoritasPresenter implements ParadasFavoritasInterface.Presenter {
     //esta en contacto con el modelo y con la vista
@@ -52,10 +55,24 @@ public class ParadasFavoritasPresenter implements ParadasFavoritasInterface.Pres
     }
 
     @Override
-    public void showArriboColectivo(String result) {
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
         if(view!=null){
-            view.showArriboColectivo(result);
+            view.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latParadaActualColectivo, lngParadaActualColectivo, latParadaActualPasajero, lngParadaActualPasajero, paradaActualColeDire, codigoError, paradasPorRecorrerList);
         }
     }
+
+    @Override
+    public void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError) {
+        if(view!=null){
+            view.showMsajeSinColectivos(responseTiempoArriboColectivo, codigoError);
+        }
+    }
+
+//    @Override
+//    public void showArriboColectivo(String result) {
+//        if(view!=null){
+//            view.showArriboColectivo(result);
+//        }
+//    }
 
 }

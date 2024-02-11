@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lucianodsepulveda.apppasajero.ui.ArriboColectivoActivity">
+    tools:context="com.example.lucianodsepulveda.apppasajero.ui.ArriboColectivoActivity"
+    android:background="@drawable/fondo_mapa_gris">
 
 
     <LinearLayout
@@ -34,44 +35,147 @@
     <LinearLayout
         android:id="@+id/ly_btns"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="340dp"
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/btn_follow_style"
+        android:stateListAnimator="@null"
+        android:elevation="10dp">
+
+        <TextView
+            android:id="@+id/tv_tituloTiempoArribo"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="15dp"
+            android:orientation="horizontal"
+            android:text="Llegada colectivo"
+            android:gravity="center">
+        </TextView>
 
         <TextView
             android:id="@+id/tv_tiempoArriboColectivo"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="10dp"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/alata"
+            android:textSize="30dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/fondo_amarillo_claro"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="#000000"
+            >
+        </TextView>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#4A4A4A"
+            android:layout_marginHorizontal="10dp"/>
+
+
+        <TextView
+            android:id="@+id/tv_tituloFechaParadaActual"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="1dp"
+            android:fontFamily="@font/poppins_regular"
             android:textSize="15dp"
             android:orientation="horizontal"
+            android:text="Fecha parada actual"
             android:gravity="center">
         </TextView>
 
         <TextView
             android:id="@+id/tv_fechaParadaActual"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_alignParentBottom="true"
+            android:layout_height="40dp"
             android:layout_marginHorizontal="10dp"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/alata"
+            android:background="@drawable/fondo_amarillo_claro"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="#000000"
+            android:textSize="30dp" />
+
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#4A4A4A"
+            android:layout_marginHorizontal="10dp"/>
+
+
+
+        <TextView
+            android:id="@+id/tv_tituloDireccionParadaActual"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="1dp"
+            android:fontFamily="@font/poppins_regular"
             android:textSize="15dp"
             android:orientation="horizontal"
+            android:text="Parada actual colectivo"
             android:gravity="center">
         </TextView>
 
-        <Button
+        <TextView
+            android:drawableLeft="@mipmap/bus_stop_icon_blue"
+            android:id="@+id/tv_direccionParadaActual"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/fondo_amarillo_claro"
+            android:fontFamily="@font/poppins_regular"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="#000000"
+             />
+
+
+
+
+        <Button
+            android:id="@+id/btnVolverAConsultar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:background="@drawable/fondo_contorno_amarillo"
             android:text="Volver a consultar"
-            android:fontFamily="@font/alata">
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textSize="15dp">
+        </Button>
+<!--        android:drawableLeft=""-->
+
+        <Button
+            android:id="@+id/btnGuardarCodigoFav"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="2dp"
+            android:text="Agregar a favoritos"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="#464646"
+            android:textSize="15dp"
+            android:background="@drawable/fondo_contorno_amarillo">
         </Button>
 
 

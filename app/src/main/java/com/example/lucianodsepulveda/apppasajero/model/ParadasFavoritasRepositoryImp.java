@@ -13,13 +13,171 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ParadasFavoritasRepositoryImp implements ParadasFavoritasRepository {
+
+    // ip local actual
+    public static String ipv4 = "http://192.168.0.105:50004/stcu2service/v1/mobile/";
+
+    // ip remoto actual
+//    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
+
+//    public static String ipv4 =  "http://192.168.1.5:50004/stcu2service/v1/mobile/";
+
+    ParadasFavoritasInterface.Presenter presenter;
+    Context mContext;
+    Activity mActivity;
+    private String responseArriboColectivo = "";
+
+    private String responseTiempoArriboColectivo = "";
+
+    RequestQueue requestQueue;
+    public ParadasFavoritasRepositoryImp(ParadasFavoritasInterface.Presenter presenter, Context mContext, Activity mActivity) {
+        this.presenter = presenter;
+        this.mContext = mContext;
+        this.mActivity = mActivity;
+        requestQueue = Volley.newRequestQueue(mContext);
+    }
+
+
+    @Override
+    public NetworkInfo isNetAvailableLocal() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //para modo avion, networkinfo es null
+        return connectivityManager.getActiveNetworkInfo();
+    }
+
+
+    public String makeRequestLlegadaColeApi(String idLineaString,  String idRecorridoString, String idParadaString){
+        String url = ipv4+"obtenerTiempoLlegadaCole/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
+
+        requestQueue = Volley.newRequestQueue(mContext);
+
+        System.out.println("informacion: datos que envia qr. idLineaQr: " + idLineaString);
+        System.out.println("informacion: datos que envia qr. idRecorridoQr: " + idRecorridoString);
+        System.out.println("informacion: datos que envia qr. idParadaQr: " + idParadaString);
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, (String) null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            responseTiempoArriboColectivo =  response.getString("mensaje");
+
+                            System.out.println("informacion del servidor ok : " + response);
+
+                            String codigoError = response.getString("codigo");
+
+                            if(Integer.parseInt(codigoError) == 200){
+
+                                JSONObject dataArriboColectivo  = response.getJSONObject("data");
+
+                                String fechaParadaActualString = dataArriboColectivo.getString("fechaParadaActual");
+
+                                String tiempoArriboColProximoString = dataArriboColectivo.getString("tiempoArriboColProximo");
+
+                                JSONObject paradaActualColeDir = new JSONObject(dataArriboColectivo.getString("paradaActual"));
+                                String paradaActualColeDire = paradaActualColeDir.getString("direccion");
+
+
+                                JSONObject paradaActualColeCoor = new JSONObject(dataArriboColectivo.getString("paradaActual")).getJSONObject("coordenadas");
+                                String coordenadasParada = paradaActualColeCoor.getString("coordinates");
+
+                                String coordenadasSinComillas = "";
+                                coordenadasSinComillas = coordenadasParada.replace("[", "").replace("]", ""); // saca corchetes
+                                String[] latLngParadaActualColectivo = coordenadasSinComillas.split(",");
+
+
+                                JSONObject paradaActualPasajero = new JSONObject(dataArriboColectivo.getString("paradaActualPasajero")).getJSONObject("coordenadas");
+                                String coordenadasParadaActualPasajero = paradaActualPasajero.getString("coordinates");
+
+                                String coordenadasParadaPasajeroSinComillas = "";
+                                coordenadasParadaPasajeroSinComillas = coordenadasParadaActualPasajero.replace("[", "").replace("]", ""); // saca corchetes
+                                String[] latLngParadaActualPasajero = coordenadasParadaPasajeroSinComillas.split(",");
+
+                                JSONArray listaParadasARecorrer = dataArriboColectivo.getJSONArray("listaParadasPorRecorrer"); // get the JSONArray
+
+                                List<ParadaCercana> paradasPorRecorrerList = new ArrayList<>();
+
+                                for (int i = 0; i < listaParadasARecorrer.length(); i++) {
+                                    JSONObject parada = new JSONObject(listaParadasARecorrer.getJSONObject(i).getString("parada"));
+                                    ParadaCercana paradaPorRecorrer = new ParadaCercana();
+                                    paradaPorRecorrer.setDireccion(parada.getString("direccion"));
+                                    JSONObject coorParada = parada.getJSONObject("coordenada");
+                                    paradaPorRecorrer.setLatitud(Double.parseDouble(coorParada.getString("lat")));
+                                    paradaPorRecorrer.setLongitud(Double.parseDouble(coorParada.getString("lng")));
+                                    paradasPorRecorrerList.add(paradaPorRecorrer);
+                                }
+
+                                presenter.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latLngParadaActualColectivo[0], latLngParadaActualColectivo[1], latLngParadaActualPasajero[0], latLngParadaActualPasajero[1], paradaActualColeDire, codigoError, paradasPorRecorrerList);
+
+                            }else{
+                                presenter.showMsajeSinColectivos(responseTiempoArriboColectivo, codigoError);
+                            }
+//                            System.out.println("lat parada actual del colectivo : " + latLngParadaActualColectivo[0]);
+//                            System.out.println("lng parada actual del colectivo : " + latLngParadaActualColectivo[1]);
+//                            System.out.println("los datos de fechaParadaActualString: " + fechaParadaActualString);
+
+//                            Double latParadaColectivoActual = Double.valueOf(latLngParadaActualColectivo[0]);
+//                            Double lngParadaColectivoActual = Double.valueOf(latLngParadaActualColectivo[1]);
+
+//                            String[] datosArriboColectivo = new String[] {responseTiempoArriboColectivo, latLngParadaActualColectivo[0],
+//                                    latLngParadaActualColectivo[1], fechaParadaActualString};
+
+
+                            //pasar al metodo por show arribo. como array de dos elementos, y ponerlo en mapa
+
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("error get Llegada cole: " + error.toString());
+                    }
+                });
+        requestQueue.add(jsonObjectRequest);
+
+        return responseTiempoArriboColectivo;
+    }
+
+
+}
+
+
+/*
+package com.example.lucianodsepulveda.apppasajero.model;
+
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ParadasFavoritasRepositoryImp implements ParadasFavoritasRepository {
 
     // ip local actual
-    public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.105:50004/stcu2service/v1/mobile/";
 
     // ip remoto actual
 //    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
@@ -83,3 +241,4 @@ public class ParadasFavoritasRepositoryImp implements ParadasFavoritasRepository
 
 
 }
+*/

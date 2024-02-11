@@ -63,4 +63,15 @@ public class ParadaCercana implements Parcelable {
         parcel.writeString(direccion);
         parcel.writeString(lineaDenom);
     }
+
+    @Override
+    public String toString() {
+        return "ParadaCercana{" +
+                "latitud=" + latitud +
+                ", longitud=" + longitud +
+                ", distancia='" + distancia + '\'' +
+                ", direccion='" + direccion + '\'' +
+                ", lineaDenom='" + lineaDenom + '\'' +
+                '}';
+    }
 }

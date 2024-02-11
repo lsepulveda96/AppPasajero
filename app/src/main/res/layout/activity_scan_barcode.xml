@@ -67,23 +67,7 @@
                     android:layout_marginHorizontal="10dp"
                     />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    >
 
-                    <Button
-                        android:id="@+id/btnGuardarCodigo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Agregar a favoritos"
-                        android:fontFamily="@font/bebasneue_regular"
-                        android:textColor="#464646"
-                        android:textSize="20dp"
-                        android:background="@drawable/fondo_contorno_amarillo"
-                        />
-                </LinearLayout>
             </LinearLayout>
 
 <!--            android:visibility="invisible"-->
@@ -183,3 +167,25 @@
 
     </RelativeLayout>
     -->
+
+
+<!--
+
+boton guardar codigo ahora esta en activity ArriboCole
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_gravity="center"
+    >
+
+<Button
+    android:id="@+id/btnGuardarCodigo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Agregar a favoritos"
+    android:fontFamily="@font/bebasneue_regular"
+    android:textColor="#464646"
+    android:textSize="20dp"
+    android:background="@drawable/fondo_contorno_amarillo"
+    />
+</LinearLayout>-->

@@ -12,13 +12,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
     // ip local actual
-    public static String ipv4 = "http://192.168.0.104:50004/stcu2service/v1/mobile/";
+    public static String ipv4 = "http://192.168.0.105:50004/stcu2service/v1/mobile/";
 
     // ip remoto actual
 //    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
@@ -59,31 +63,55 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
                             System.out.println("informacion del servidor ok : " + response);
 
+                            String codigoError = response.getString("codigo");
 
-                            JSONObject colectivoRecorrido  = response.getJSONObject("data");
+                            if(Integer.parseInt(codigoError) == 200){
 
-                            String fechaParadaActualString = colectivoRecorrido.getString("fechaParadaActual");
+                                JSONObject dataArriboColectivo  = response.getJSONObject("data");
 
-                            JSONObject paradaActual = new JSONObject(colectivoRecorrido.getString("paradaActual")).getJSONObject("coordenadas");
-                            String coordenadasParada = paradaActual.getString("coordinates");
+                                String fechaParadaActualString = dataArriboColectivo.getString("fechaParadaActual");
 
-                            String coordenadasSinComillas = "";
-                            coordenadasSinComillas = coordenadasParada.replace("[", "").replace("]", ""); // saca corchetes
-                            String[] latLngParadaActualColectivo = coordenadasSinComillas.split(",");
-                            System.out.println("lat parada actual del colectivo : " + latLngParadaActualColectivo[0]);
-                            System.out.println("lng parada actual del colectivo : " + latLngParadaActualColectivo[1]);
-                            System.out.println("los datos de fechaParadaActualString: " + fechaParadaActualString);
+                                String tiempoArriboColProximoString = dataArriboColectivo.getString("tiempoArriboColProximo");
 
-//                            Double latParadaColectivoActual = Double.valueOf(latLngParadaActualColectivo[0]);
-//                            Double lngParadaColectivoActual = Double.valueOf(latLngParadaActualColectivo[1]);
+                                JSONObject paradaActualColeDir = new JSONObject(dataArriboColectivo.getString("paradaActual"));
+                                String paradaActualColeDire = paradaActualColeDir.getString("direccion");
 
-//                            String[] datosArriboColectivo = new String[] {responseTiempoArriboColectivo, latLngParadaActualColectivo[0],
-//                                    latLngParadaActualColectivo[1], fechaParadaActualString};
 
-                            presenter.showArriboColectivo(responseTiempoArriboColectivo, latLngParadaActualColectivo[0], latLngParadaActualColectivo[1], fechaParadaActualString );
+                                JSONObject paradaActualColeCoor = new JSONObject(dataArriboColectivo.getString("paradaActual")).getJSONObject("coordenadas");
+                                String coordenadasParada = paradaActualColeCoor.getString("coordinates");
 
-                            //pasar al metodo por show arribo. como array de dos elementos, y ponerlo en mapa
+                                String coordenadasSinComillas = "";
+                                coordenadasSinComillas = coordenadasParada.replace("[", "").replace("]", ""); // saca corchetes
+                                String[] latLngParadaActualColectivo = coordenadasSinComillas.split(",");
 
+
+                                JSONObject paradaActualPasajero = new JSONObject(dataArriboColectivo.getString("paradaActualPasajero")).getJSONObject("coordenadas");
+                                String coordenadasParadaActualPasajero = paradaActualPasajero.getString("coordinates");
+
+                                String coordenadasParadaPasajeroSinComillas = "";
+                                coordenadasParadaPasajeroSinComillas = coordenadasParadaActualPasajero.replace("[", "").replace("]", ""); // saca corchetes
+                                String[] latLngParadaActualPasajero = coordenadasParadaPasajeroSinComillas.split(",");
+
+
+                                JSONArray listaParadasARecorrer = dataArriboColectivo.getJSONArray("listaParadasPorRecorrer"); // get the JSONArray
+
+                                List<ParadaCercana> paradasPorRecorrerList = new ArrayList<>();
+
+                                for (int i = 0; i < listaParadasARecorrer.length(); i++) {
+                                    JSONObject parada = new JSONObject(listaParadasARecorrer.getJSONObject(i).getString("parada"));
+                                    ParadaCercana paradaPorRecorrer = new ParadaCercana();
+                                    paradaPorRecorrer.setDireccion(parada.getString("direccion"));
+                                    JSONObject coorParada = parada.getJSONObject("coordenada");
+                                    paradaPorRecorrer.setLatitud(Double.parseDouble(coorParada.getString("lat")));
+                                    paradaPorRecorrer.setLongitud(Double.parseDouble(coorParada.getString("lng")));
+                                    paradasPorRecorrerList.add(paradaPorRecorrer);
+                                }
+
+                                presenter.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latLngParadaActualColectivo[0], latLngParadaActualColectivo[1], latLngParadaActualPasajero[0], latLngParadaActualPasajero[1], paradaActualColeDire, codigoError, paradasPorRecorrerList);
+
+                            }else{
+                                presenter.showMsajeSinColectivos(responseTiempoArriboColectivo, codigoError);
+                            }
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -112,7 +140,8 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
 
     // crear metodo obtener ubicacion pasajero
-    public String makeRequestGetUbicacionParadaRecorrido(String idLineaString,  String idRecorridoString, String idParadaString){
+    // no usa mas, se pasaron los datos por dto en tiempo arribo colectivo
+    /*public String makeRequestGetUbicacionParadaRecorrido(String idLineaString,  String idRecorridoString, String idParadaString){
         String url = ipv4+"obtenerUbicacionParadaRecorrido/"+ idLineaString +"/"+ idRecorridoString +"/"+ idParadaString;
 
 
@@ -145,6 +174,9 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
         requestQueue.add(jsonObjectRequest);
 
         return ubicacionParadaPasajero;
-    }
+    }*/
+
+
+
 
 }

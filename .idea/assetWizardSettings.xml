@@ -100,7 +100,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\PC\Downloads\img_parada_amarilla_sin_fondo.png" />
+                                                <entry key="imagePath" value="C:\Users\PC\Downloads\busStopIcon.png" />
                                                 <entry key="scalingPercent" value="98" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
@@ -151,7 +151,18 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\PC\AppData\Local\Temp\ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\PC\AppData\Local\Temp\baseline_autorenew_24.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/autorenew/baseline_autorenew_24.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -163,7 +174,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\PC\Downloads\img_parada_amarilla_sin_fondo.png" />
+                                                <entry key="imagePath" value="C:\Users\PC\Downloads\icono_bus_stop_gris.png" />
+                                                <entry key="paddingPercent" value="5" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -197,8 +209,8 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="iconShape" value="NONE" />
-                                      <entry key="imageAsset" value="C:\Users\PC\Downloads\img_parada_amarilla_sin_fondo.png" />
-                                      <entry key="outputName" value="parada_amarilla_icon" />
+                                      <entry key="imageAsset" value="C:\Users\PC\Downloads\icono_bus_stop_gris.png" />
+                                      <entry key="outputName" value="icono_bus_stop_gris" />
                                     </map>
                                   </option>
                                 </PersistentState>

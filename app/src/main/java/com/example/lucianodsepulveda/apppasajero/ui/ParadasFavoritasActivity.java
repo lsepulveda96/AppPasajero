@@ -29,11 +29,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ParadasFavoritasInterface;
 import com.example.lucianodsepulveda.apppasajero.model.Parada;
+import com.example.lucianodsepulveda.apppasajero.model.ParadaCercana;
 import com.example.lucianodsepulveda.apppasajero.presenter.ParadasFavoritasPresenter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ParadasFavoritasActivity extends Activity implements ParadasFavoritasInterface.View {
 
@@ -176,7 +179,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
 
         //necesario para comprobar internet en tiempo real
         IntentFilter intentFilter =new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(mBroadcastReceiver,intentFilter); 
+        registerReceiver(mBroadcastReceiver,intentFilter);
         //
     }
 
@@ -207,18 +210,52 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     }
 
     @Override
-    public void showArriboColectivo(String result) {
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
 
-        System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder: " + result );
+        System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder show arribo: " + tiempoArriboColProximoString);
         SharedPreferences sharedPreferencesArriboCole;
 
-        sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("TiempoArribo", Context.MODE_PRIVATE);
+        sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("DataArriboCole", Context.MODE_PRIVATE);
         SharedPreferences.Editor myEditor = sharedPreferencesArriboCole.edit();
-        myEditor.putString("TiempoArribo", result);
+        myEditor.putString("TiempoArribo", tiempoArriboColProximoString);
+        myEditor.putString("codigoError", codigoError);
+        myEditor.putString("fechaParadaActual", fechaParadaActualString);
+        myEditor.putString("latParadaActualColectivo", latParadaActualColectivo);
+        myEditor.putString("lngParadaActualColectivo", lngParadaActualColectivo);
+        myEditor.putString("latParadaActualPasajero", latParadaActualPasajero);
+        myEditor.putString("lngParadaActualPasajero", lngParadaActualPasajero);
+        myEditor.putString("paradaActualColeDire", paradaActualColeDire);
+
+        if(paradasPorRecorrerList != null){
+            Set<String> set = new HashSet<String>();
+            for (ParadaCercana parada: paradasPorRecorrerList) {
+                set.add(parada.getLatitud() + "," + parada.getLongitud()+ "," + parada.getDireccion());
+            }
+            myEditor.putStringSet("paradasPorRecorrerList", set);
+        }
+
+        // aca agregar los otros valores para leerlos dentro del recyvler view
         myEditor.commit();
         recyclerViewAdapter.notifyDataSetChanged();
 
-        responseArriboColectivo = result;
+        responseArriboColectivo = tiempoArriboColProximoString;
+    }
+
+    @Override
+    public void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError) {
+        // aca recibo los datos cuando hay codigo 400 y envio a recycler view!
+        System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder sin colectivos: " + responseTiempoArriboColectivo );
+        SharedPreferences sharedPreferencesArriboCole;
+
+        sharedPreferencesArriboCole = getApplicationContext().getSharedPreferences("DataArriboCole", Context.MODE_PRIVATE);
+        SharedPreferences.Editor myEditor = sharedPreferencesArriboCole.edit();
+        myEditor.putString("TiempoArribo", responseTiempoArriboColectivo);
+        myEditor.putString("codigoError", codigoError);
+        // aca agregar los otros valores para leerlos dentro del recyvler view
+        myEditor.commit();
+        recyclerViewAdapter.notifyDataSetChanged();
+
+        responseArriboColectivo = responseTiempoArriboColectivo;
     }
 
     public boolean onOptionsItemSelected(MenuItem item){

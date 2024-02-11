@@ -11,6 +11,6 @@ public interface ScannerQRCodeRepository {
 
     String makeRequestLlegadaColeApi(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
-    String makeRequestGetUbicacionParadaRecorrido(String idLineaQr, String idRecorridoQr, String idParadaQr);
+//    String makeRequestGetUbicacionParadaRecorrido(String idLineaQr, String idRecorridoQr, String idParadaQr);
 
 }

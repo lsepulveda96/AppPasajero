@@ -3,9 +3,12 @@ package com.example.lucianodsepulveda.apppasajero.ui;
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,6 +17,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
@@ -27,6 +31,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.lucianodsepulveda.apppasajero.R;
 import com.example.lucianodsepulveda.apppasajero.interfaces.ScannerQRCodeInterface;
+import com.example.lucianodsepulveda.apppasajero.model.ParadaCercana;
 import com.example.lucianodsepulveda.apppasajero.presenter.ScannerQRCodePresenter;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -34,6 +39,8 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInterface.View {
@@ -43,9 +50,11 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private Button btnGuardarCodigo, btnAtras;
+    private Button btnAtras;
+    //    btnGuardarCodigo,
     private boolean isEmail = false, scannerIniciado = false;
-    private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseTiempoArriboColectivo = "", intentData = "" , latParadaActualColectivo = "", lngParadaActualColectivo="", fechaParadaActualString="";
+    private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseTiempoArriboColectivo = "", intentData = "" , latParadaActualColectivo = "", lngParadaActualColectivo="", fechaParadaActualString="",  latParadaActualPasajero="", lngParadaActualPasajero="", paradaActualColeDire="", codigoError="";
+    private List<ParadaCercana> paradasPorRecorrerList = new ArrayList<>();
     private int control;
     private ProgressDialog dialog2;
     IntentFilter intentFilter;
@@ -128,7 +137,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
         tvNetwork = (TextView) findViewById(R.id.tv_network);
         barcodeText = findViewById(R.id.txtBarcodeValue);
         surfaceView = findViewById(R.id.surfaceView);
-        btnGuardarCodigo = findViewById(R.id.btnGuardarCodigo);
+//        btnGuardarCodigo = findViewById(R.id.btnGuardarCodigo);
         btnAtras = findViewById(R.id.btnAtras);
 
         btnAtras.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +149,9 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
             }
         });
 
-        btnGuardarCodigo.setEnabled( false );
+    /*
+    // este boton paso al otro activity (llegada cole)
+    btnGuardarCodigo.setEnabled( false );
         btnGuardarCodigo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,7 +179,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
                 }
 
             }
-        });
+        });*/
 
 
         //necesario para comprobar internet en tiempo real
@@ -239,6 +250,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
 
                             if (barcodes.valueAt(0).displayValue != null) {
                                 intentData = barcodes.valueAt(0).displayValue;
+                                System.out.println("codigo qr antes de entrar a arribo colectivo "+ intentData);
                                 setData(intentData);
                                 if (control == 0) {
 
@@ -275,7 +287,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
 
                                         // si codigo es valido, continua
 
-                                        btnGuardarCodigo.setEnabled(true);
+//                                        btnGuardarCodigo.setEnabled(true);
                                         final String codShow = denomLineaQr + " - " + direccionParadaQr;
                                         barcodeText.setText(codShow);
 
@@ -306,19 +318,84 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
                                                     Toast t2 = Toast.makeText(getApplicationContext(), "No es posible realizar la consulta", Toast.LENGTH_SHORT);
                                                     t2.show();
                                                 } else {
-                                                    // todo working in progress!
 
-                                                    Intent intent = new Intent(ScannerQRCodeActivity.this, ArriboColectivoActivity.class);
-//                                                    intent.putParcelableArrayListExtra("key", (ArrayList<? extends Parcelable>) listaParadasCercanas);
-                                                    intent.putExtra("idLinea", idLineaQr);
-                                                    intent.putExtra("idRecorrido", idRecorridoQr);
-                                                    intent.putExtra("idParada", idParadaQr);
-                                                    intent.putExtra("arriboColectivo", responseTiempoArriboColectivo);
-                                                    intent.putExtra("latParadaActualColectivo", latParadaActualColectivo);
-                                                    intent.putExtra("lngParadaActualColectivo", lngParadaActualColectivo);
-                                                    intent.putExtra("fechaParadaActualString", fechaParadaActualString);
-                                                    startActivity(intent);
-                                                }
+
+                                                    // si no hay colectivos cercanos, ya sea por error o por no encontrarse ninguno en funcionamiento
+                                                    if(Integer.parseInt(codigoError) == 400 ){
+
+                                                        System.out.println("entra por codigo de error 400, debe mostrar cartel y salir" + Integer.parseInt(codigoError));
+
+                                                        AlertDialog.Builder builder = new AlertDialog.Builder(ScannerQRCodeActivity.this);
+                                                        builder.setTitle("Informacion:");
+                                                        builder.setMessage(resp1);
+                                                        builder.setPositiveButton("Guardar codigo", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                                //TODO reemplaza boton fav
+                                                                SharedPreferences preferences = getApplicationContext().getSharedPreferences("Codigos", Context.MODE_PRIVATE);
+                                                                boolean codigoNoExiste = true;
+
+                                                                Map<String, ?> allEntries = preferences.getAll();
+                                                                for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                                                                    if (codShow.equals(entry.getKey())) {
+                                                                        codigoNoExiste = false;
+                                                                    }
+                                                                }
+
+                                                                // porque no habia otro codigo igual
+                                                                if (codigoNoExiste) {
+                                                                    SharedPreferences.Editor myEditor = preferences.edit();
+                                                                    // todo problema al guardar codigo ventana emergente
+                                                                    myEditor.putString(codShow, getData());
+                                                                    myEditor.commit();
+                                                                    Toast t5 = Toast.makeText(getApplicationContext(), "Guardado con exito!", Toast.LENGTH_SHORT);
+                                                                    t5.show();
+                                                                } else {
+                                                                    Toast t6 = Toast.makeText(getApplicationContext(), "El codigo QR ya existe!", Toast.LENGTH_SHORT);
+                                                                    t6.show();
+                                                                }
+
+                                                                finish();
+                                                                //TODO fin boton fav
+                                                            }
+                                                        });
+
+                                                        builder.setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                finish();
+                                                            }
+                                                        });
+
+                                                        Dialog dialog = builder.create();
+                                                        dialog.show();
+                                                        //TODO fin cartel
+
+                                                    }else{ // fin codigo valido sin colectivos circulando
+
+
+                                                        // todo working in progress!
+                                                        System.out.println("no mostro cartel y siguio porqe habia cole cerca circulando");
+
+                                                        Intent intent = new Intent(ScannerQRCodeActivity.this, ArriboColectivoActivity.class);
+                                                        intent.putExtra("idLinea", idLineaQr);
+                                                        intent.putExtra("idRecorrido", idRecorridoQr);
+                                                        intent.putExtra("idParada", idParadaQr);
+                                                        intent.putExtra("arriboColectivo", responseTiempoArriboColectivo);
+                                                        intent.putExtra("latParadaActualColectivo", latParadaActualColectivo);
+                                                        intent.putExtra("lngParadaActualColectivo", lngParadaActualColectivo);
+                                                        intent.putExtra("latParadaActualPasajero", latParadaActualPasajero);
+                                                        intent.putExtra("lngParadaActualPasajero", lngParadaActualPasajero);
+                                                        intent.putExtra("fechaParadaActualString", fechaParadaActualString);
+                                                        intent.putExtra("paradaActualColeDire", paradaActualColeDire);
+                                                        intent.putParcelableArrayListExtra("paradasPorRecorrerList", (ArrayList<? extends Parcelable>) paradasPorRecorrerList);
+                                                        intent.putExtra("codShow", codShow);
+                                                        intent.putExtra("dataQrCode", getData());
+                                                        startActivity(intent);
+                                                    } // fin codigo valido colectivo circulando
+
+                                                } // fin codigo valido
                                             }
                                         };
                                         handler.postDelayed(r, 5000);
@@ -384,17 +461,32 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     }
 
     @Override
-    public void showArriboColectivo(String tiempoArriboColectivo, String latParadaActualColectivo, String lngParadaActualColectivo, String fechaParadaActualString) {
-        responseTiempoArriboColectivo = tiempoArriboColectivo;
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
+        this.fechaParadaActualString = fechaParadaActualString;
+        responseTiempoArriboColectivo = tiempoArriboColProximoString;
         this.latParadaActualColectivo = latParadaActualColectivo;
         this.lngParadaActualColectivo = lngParadaActualColectivo;
-        this.fechaParadaActualString = fechaParadaActualString;
+        this.latParadaActualPasajero= latParadaActualPasajero;
+        this.lngParadaActualPasajero= lngParadaActualPasajero;
+        this.paradaActualColeDire = paradaActualColeDire;
+        this.codigoError = codigoError;
+        this.paradasPorRecorrerList = paradasPorRecorrerList;
     }
 
     @Override
+    public void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError) {
+        this.responseTiempoArriboColectivo = responseTiempoArriboColectivo;
+        this.codigoError = codigoError;
+    }
+
+
+
+
+
+/*    @Override
     public void showUbicacionParadaPasajero(String ubicacionParadaPasajero) {
         // aca no sirve, pero tengo que ponerlo para que lea los datos en ArriboColeActivity
-    }
+    }*/
 
     public boolean onOptionsItemSelected(MenuItem item){
         Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
