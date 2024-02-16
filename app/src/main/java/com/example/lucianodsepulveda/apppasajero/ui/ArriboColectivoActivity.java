@@ -52,10 +52,8 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
     MainFragment fragment;
 //    Button atras;
 
-    TextView TvParadaActualColeDire;
-    TextView TvTiempoArriboCole;
-    TextView TvFechaParadaActual;
-    String idLinea, idRecorrido, idParada, arriboColectivo, latParadaActualColectivo, lngParadaActualColectivo, fechaParadaActualString, latParadaActualPasajero, lngParadaActualPasajero, paradaActualColeDire, codShow;
+    TextView TvParadaActualColeDire, TvParadaActualPasajeroDire, TvTiempoArriboCole, TvFechaParadaActual;
+    String idLinea, idRecorrido, idParada, arriboColectivo, latParadaActualColectivo, lngParadaActualColectivo, fechaParadaActualString, latParadaActualPasajero, lngParadaActualPasajero, paradaActualColeDire, codShow, paradaActualPasajeroDire;
     List<Marker> markers;
 
     SharedPreferences sharedPreferences;
@@ -76,7 +74,6 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
         btnVolverAConsultar = findViewById(R.id.btnVolverAConsultar);
 
         // para volver a consultar
-        // tambien para traer la ubicacion del pasajero. crear metodo para consultar
         idLinea = getIntent().getExtras().getString("idLinea");
         idRecorrido = getIntent().getExtras().getString("idRecorrido");
         idParada = getIntent().getExtras().getString("idParada");
@@ -87,21 +84,26 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
         lngParadaActualPasajero = getIntent().getExtras().getString("lngParadaActualPasajero");
         fechaParadaActualString = getIntent().getExtras().getString("fechaParadaActualString");
         paradaActualColeDire = getIntent().getExtras().getString("paradaActualColeDire");
+        paradaActualPasajeroDire = getIntent().getExtras().getString("paradaActualPasajeroDire");
         paradasPorRecorrerList = getIntent().getParcelableArrayListExtra("paradasPorRecorrerList");
         codShow = getIntent().getExtras().getString("codShow");
         dataQrCode = getIntent().getExtras().getString("dataQrCode");
         setData(dataQrCode);
         TvTiempoArriboCole = findViewById(R.id.tv_tiempoArriboColectivo);
         TvTiempoArriboCole.setText(arriboColectivo);
-        TvParadaActualColeDire = findViewById(R.id.tv_direccionParadaActual);
-        TvParadaActualColeDire.setText(paradaActualColeDire);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(Long.parseLong(fechaParadaActualString));
-        DateFormat formateador= new SimpleDateFormat("dd/M/yy hh:mm");
+        DateFormat formateador= new SimpleDateFormat("hh:mm");
 
-        TvFechaParadaActual = findViewById(R.id.tv_fechaParadaActual);
-        TvFechaParadaActual.setText(formateador.format(cal.getTime()));
+        TvParadaActualColeDire = findViewById(R.id.tv_direccionParadaActual);
+        TvParadaActualColeDire.setText(paradaActualColeDire +" a las "+formateador.format(cal.getTime()));
+
+        TvParadaActualPasajeroDire = findViewById(R.id.tv_paradaActualPasajeroDire);
+        TvParadaActualPasajeroDire.setText(paradaActualPasajeroDire);
+
+//        TvFechaParadaActual = findViewById(R.id.tv_fechaParadaActual);
+//        TvFechaParadaActual.setText(formateador.format(cal.getTime()));
 
 //        atras = (Button)findViewById(R.id.btnAtras);
         markers = new ArrayList<Marker>();
@@ -191,14 +193,14 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
                 // Add a marker in Sydney and move the camera
                 LatLng ubicacionParadaActualColectivo = new LatLng(Double.parseDouble(latParadaActualColectivo), Double.parseDouble(lngParadaActualColectivo)); // marcador por defecto
                 //mMap.addMarker(new MarkerOptions().position(ubicacionParadaActualColectivo).title("Parada actual colectivo").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_img)));
-                mMap.addMarker(new MarkerOptions().position(ubicacionParadaActualColectivo).title("Parada actual colectivo").icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_stop_icon_blue)));
+                mMap.addMarker(new MarkerOptions().position(ubicacionParadaActualColectivo).title(paradaActualColeDire).icon(BitmapDescriptorFactory.fromResource(R.mipmap.bus_stop_icon_blue)));
 //        float zoomLevel = 15;
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionParadaActualColectivo,zoomLevel)); // para agregarle zoom
 
 
                 LatLng latlngubicacionParadaPasajero = new LatLng(Double.parseDouble(latParadaActualPasajero), Double.parseDouble(lngParadaActualPasajero)); // marcador por defecto
 //            Marker marcador = mMap.addMarker(new MarkerOptions().position(ubicacionParadaPasajero).title(item.getDireccion()).snippet("Distancia: " + item.getDistancia() +" metros").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_img)));
-                Marker marcador = mMap.addMarker(new MarkerOptions().position(latlngubicacionParadaPasajero).title("Mi ubicacion").icon(BitmapDescriptorFactory.fromResource(R.mipmap.man_img)));
+                Marker marcador = mMap.addMarker(new MarkerOptions().position(latlngubicacionParadaPasajero).title(paradaActualPasajeroDire).icon(BitmapDescriptorFactory.fromResource(R.mipmap.man_img)));
                 markers.add(marcador);
 
                 LatLngBounds myBounds = new LatLngBounds(ubicacionParadaActualColectivo,latlngubicacionParadaPasajero);
@@ -210,13 +212,15 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
 
 
                 if(paradasPorRecorrerList != null){
-                    System.out.println("llega la respuesta aca paradasPorRecorrer dentro de on map ready: "  + paradasPorRecorrerList.toString() );
                     // anade paradas por recorrer
+//                    paradasPorRecorrerList.remove(paradasPorRecorrerList.size()-1);
                     for (ParadaCercana paradaPorRecorrer: paradasPorRecorrerList) {
-                        LatLng ubicacionparadaPorRecorrer = new LatLng(paradaPorRecorrer.getLatitud(), paradaPorRecorrer.getLongitud()); // marcador por defecto
-                        System.out.println("ubicacion parada por recorrer:" + ubicacionparadaPorRecorrer.toString());
-                        //mMap.addMarker(new MarkerOptions().position(ubicacionParadaActualColectivo).title("Parada actual colectivo").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_img)));
-                        mMap.addMarker(new MarkerOptions().position(ubicacionparadaPorRecorrer).title(paradaPorRecorrer.getDireccion()).icon(BitmapDescriptorFactory.fromResource(R.mipmap.icono_bus_stop_gris)));
+                        if(paradaPorRecorrer.getLatitud() != latlngubicacionParadaPasajero.latitude && paradaPorRecorrer.getLongitud() != latlngubicacionParadaPasajero.longitude){
+                            LatLng ubicacionparadaPorRecorrer = new LatLng(paradaPorRecorrer.getLatitud(), paradaPorRecorrer.getLongitud()); // marcador por defecto
+                            System.out.println("ubicacion parada por recorrer:" + ubicacionparadaPorRecorrer.toString());
+                            //mMap.addMarker(new MarkerOptions().position(ubicacionParadaActualColectivo).title("Parada actual colectivo").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_img)));
+                            mMap.addMarker(new MarkerOptions().position(ubicacionparadaPorRecorrer).title(paradaPorRecorrer.getDireccion()).icon(BitmapDescriptorFactory.fromResource(R.mipmap.icono_bus_stop_gris)));
+                        }
                     }
                 }
 
@@ -241,7 +245,7 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
     }
 
 
-//    public void atras(View view){
+    //    public void atras(View view){
     public void salir(){
         mMap.clear();
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN); // hay mapa satelital, normal, de terreno o sin capas
@@ -294,14 +298,17 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
     }
 
     @Override
-    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
-        //       Toast.makeText(this, "llego la consulta" + fechaParadaActualString, Toast.LENGTH_LONG).show();
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire) {
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(Long.parseLong(fechaParadaActualString));
-        DateFormat formateador= new SimpleDateFormat("dd/M/yy hh:mm");
-        TvFechaParadaActual.setText(formateador.format(cal.getTime()));
-        this.fechaParadaActualString = fechaParadaActualString;
+        DateFormat formateador= new SimpleDateFormat("hh:mm");
+
+        TvParadaActualColeDire.setText(paradaActualColeDire +" a las "+ formateador.format(cal.getTime()));
+        this.paradaActualColeDire = paradaActualColeDire;
+
+//        TvFechaParadaActual.setText(formateador.format(cal.getTime()));
+//        this.fechaParadaActualString = fechaParadaActualString;
 
         TvTiempoArriboCole.setText(tiempoArriboColProximoString);
         this.arriboColectivo = tiempoArriboColProximoString;
@@ -312,8 +319,8 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
         this.latParadaActualPasajero = latParadaActualPasajero;
         this.lngParadaActualPasajero = lngParadaActualPasajero;
 
-        TvParadaActualColeDire.setText(paradaActualColeDire);
-        this.paradaActualColeDire = paradaActualColeDire;
+        TvParadaActualPasajeroDire.setText(paradaActualPasajeroDire);
+        this.paradaActualPasajeroDire = paradaActualPasajeroDire;
 
         this.paradasPorRecorrerList = paradasPorRecorrerList;
 
@@ -350,23 +357,5 @@ public class ArriboColectivoActivity extends FragmentActivity implements Scanner
     public String getData(){
         return this.dataC;
     }
-
-/*    @Override
-    public void showUbicacionParadaPasajero(String ubicacionParadaPasajero) {
-//        System.out.println("informacion obtenerUbicacionParadaRecorrido en arribo cole activity: " + ubicacionParadaPasajero);
-//        latParadaPasajero = Double.valueOf(ubicacionParadaPasajero.split(",")[0]);
-//        lngParadaPasajero = Double.valueOf(ubicacionParadaPasajero.split(",")[1]);
-
-//        LatLng latlngubicacionParadaPasajero = new LatLng(latParadaPasajero, lngParadaPasajero); // marcador por defecto
-////            Marker marcador = mMap.addMarker(new MarkerOptions().position(ubicacionParadaPasajero).title(item.getDireccion()).snippet("Distancia: " + item.getDistancia() +" metros").icon(BitmapDescriptorFactory.fromResource(R.mipmap.parada_img)));
-//        Marker marcador = mMap.addMarker(new MarkerOptions().position(latlngubicacionParadaPasajero).title("Mi ubicacion").icon(BitmapDescriptorFactory.fromResource(R.mipmap.man_img)));
-//        markers.add(marcador);
-
-
-//        Toast.makeText(this, "coordenadas ubicacion pasajero! " + latParadaPasajero + " - " + lngParadaPasajero, Toast.LENGTH_LONG).show();
-
-
-    }*/
-
 
 }

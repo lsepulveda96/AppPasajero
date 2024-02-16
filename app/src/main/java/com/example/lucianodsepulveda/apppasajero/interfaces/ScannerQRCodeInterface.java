@@ -10,7 +10,7 @@ public interface ScannerQRCodeInterface {
 
     interface View{
         // la vista muestra el dato una vez calculado
-        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList);
+        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire);
 
         void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError);
 
@@ -24,7 +24,7 @@ public interface ScannerQRCodeInterface {
 
         NetworkInfo isNetAvailable();
 
-        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList);
+        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire);
 
         void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError);
 

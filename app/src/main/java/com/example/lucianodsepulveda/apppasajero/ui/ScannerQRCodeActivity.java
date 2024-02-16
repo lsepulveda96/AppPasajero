@@ -53,7 +53,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     private Button btnAtras;
     //    btnGuardarCodigo,
     private boolean isEmail = false, scannerIniciado = false;
-    private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseTiempoArriboColectivo = "", intentData = "" , latParadaActualColectivo = "", lngParadaActualColectivo="", fechaParadaActualString="",  latParadaActualPasajero="", lngParadaActualPasajero="", paradaActualColeDire="", codigoError="";
+    private String dataC, idLineaQr, idParadaQr, denomLineaQr, denomRecorridoQr, idRecorridoQr, direccionParadaQr, responseTiempoArriboColectivo = "", intentData = "" , latParadaActualColectivo = "", lngParadaActualColectivo="", fechaParadaActualString="",  latParadaActualPasajero="", lngParadaActualPasajero="", paradaActualColeDire="", codigoError="", paradaActualPasajeroDire="";
     private List<ParadaCercana> paradasPorRecorrerList = new ArrayList<>();
     private int control;
     private ProgressDialog dialog2;
@@ -389,6 +389,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
                                                         intent.putExtra("lngParadaActualPasajero", lngParadaActualPasajero);
                                                         intent.putExtra("fechaParadaActualString", fechaParadaActualString);
                                                         intent.putExtra("paradaActualColeDire", paradaActualColeDire);
+                                                        intent.putExtra("paradaActualPasajeroDire", paradaActualPasajeroDire);
                                                         intent.putParcelableArrayListExtra("paradasPorRecorrerList", (ArrayList<? extends Parcelable>) paradasPorRecorrerList);
                                                         intent.putExtra("codShow", codShow);
                                                         intent.putExtra("dataQrCode", getData());
@@ -461,7 +462,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
     }
 
     @Override
-    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire) {
         this.fechaParadaActualString = fechaParadaActualString;
         responseTiempoArriboColectivo = tiempoArriboColProximoString;
         this.latParadaActualColectivo = latParadaActualColectivo;
@@ -471,6 +472,7 @@ public class ScannerQRCodeActivity extends Activity implements ScannerQRCodeInte
         this.paradaActualColeDire = paradaActualColeDire;
         this.codigoError = codigoError;
         this.paradasPorRecorrerList = paradasPorRecorrerList;
+        this.paradaActualPasajeroDire = paradaActualPasajeroDire;
     }
 
     @Override

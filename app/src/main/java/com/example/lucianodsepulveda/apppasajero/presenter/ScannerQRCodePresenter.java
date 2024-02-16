@@ -51,9 +51,9 @@ public class ScannerQRCodePresenter implements ScannerQRCodeInterface.Presenter 
     }
 
     @Override
-    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire) {
         if(view!=null){
-            view.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latParadaActualColectivo, lngParadaActualColectivo, latParadaActualPasajero, lngParadaActualPasajero, paradaActualColeDire, codigoError, paradasPorRecorrerList);
+            view.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latParadaActualColectivo, lngParadaActualColectivo, latParadaActualPasajero, lngParadaActualPasajero, paradaActualColeDire, codigoError, paradasPorRecorrerList, paradaActualPasajeroDire);
         }
     }
 

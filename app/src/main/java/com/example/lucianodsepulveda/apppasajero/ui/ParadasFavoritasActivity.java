@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +40,6 @@ import java.util.Set;
 public class ParadasFavoritasActivity extends Activity implements ParadasFavoritasInterface.View {
 
     //cambiar nombres variables
-    Button btnScanBarcode;
     ListView listaParadasAdapter;
     ArrayAdapter<String> arrayAdapter;
     RecyclerView recyclerView;
@@ -83,7 +81,6 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
         }else {
             tvNetwork.setVisibility(View.VISIBLE);
 //            Toast.makeText(getApplicationContext(),"Internet apagado", Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -105,7 +102,6 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     public void initViews() {
         listaParadasAdapter = (ListView) findViewById(R.id.lvFav);
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
-//        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         tvNetwork = (TextView)findViewById(R.id.tv_network);
 
         sharedPreferences = getApplicationContext().getSharedPreferences("Codigos", Context.MODE_PRIVATE);
@@ -184,18 +180,6 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     }
 
 
-    //este metodo queda, porque solo llama a otro acitiviy
-  /*  @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.btnScanBarcode:
-                startActivity(new Intent(ParadasFavoritasActivity.this, ScannerQRCodeActivity.class));
-                finish();
-                break;
-        }
-    }*/
-
     public List<Parada> getListaParadas() {
         return listaParadas;
     }
@@ -210,7 +194,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
     }
 
     @Override
-    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList) {
+    public void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire) {
 
         System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder show arribo: " + tiempoArriboColProximoString);
         SharedPreferences sharedPreferencesArriboCole;
@@ -225,6 +209,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
         myEditor.putString("latParadaActualPasajero", latParadaActualPasajero);
         myEditor.putString("lngParadaActualPasajero", lngParadaActualPasajero);
         myEditor.putString("paradaActualColeDire", paradaActualColeDire);
+        myEditor.putString("paradaActualPasajeroDire", paradaActualPasajeroDire);
 
         if(paradasPorRecorrerList != null){
             Set<String> set = new HashSet<String>();
@@ -234,7 +219,6 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
             myEditor.putStringSet("paradasPorRecorrerList", set);
         }
 
-        // aca agregar los otros valores para leerlos dentro del recyvler view
         myEditor.commit();
         recyclerViewAdapter.notifyDataSetChanged();
 
@@ -243,7 +227,7 @@ public class ParadasFavoritasActivity extends Activity implements ParadasFavorit
 
     @Override
     public void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError) {
-        // aca recibo los datos cuando hay codigo 400 y envio a recycler view!
+        // recibo los datos cuando hay codigo 400 y envio a recycler view!
         System.out.println("informacion: devolvio resultado en activity y debo pasarlo al view holder sin colectivos: " + responseTiempoArriboColectivo );
         SharedPreferences sharedPreferencesArriboCole;
 

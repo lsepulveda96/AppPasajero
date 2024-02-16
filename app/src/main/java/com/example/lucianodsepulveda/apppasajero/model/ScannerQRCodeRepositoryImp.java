@@ -22,13 +22,12 @@ import java.util.List;
 public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
 
     // ip local actual
-    public static String ipv4 = "http://192.168.0.105:50004/stcu2service/v1/mobile/";
+//    public static String ipv4 = "http://192.168.0.105:50004/stcu2service/v1/mobile/";
 
     // ip remoto actual
-//    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
+    public static String ipv4 =  "http://138.36.99.248:50004/stcu2service/v1/mobile/";
 
-//    public static String ipv4 =  "http://192.168.1.5:50004/stcu2service/v1/mobile/";
-
+//
     RequestQueue requestQueue;
     private String responseTiempoArriboColectivo = "";
     private String ubicacionParadaPasajero = "";
@@ -76,6 +75,8 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
                                 JSONObject paradaActualColeDir = new JSONObject(dataArriboColectivo.getString("paradaActual"));
                                 String paradaActualColeDire = paradaActualColeDir.getString("direccion");
 
+                                JSONObject paradaActualPasajeroDir = new JSONObject(dataArriboColectivo.getString("paradaActualPasajero"));
+                                String paradaActualPasajeroDire = paradaActualPasajeroDir.getString("direccion");
 
                                 JSONObject paradaActualColeCoor = new JSONObject(dataArriboColectivo.getString("paradaActual")).getJSONObject("coordenadas");
                                 String coordenadasParada = paradaActualColeCoor.getString("coordinates");
@@ -107,7 +108,7 @@ public class ScannerQRCodeRepositoryImp implements ScannerQRCodeRepository {
                                     paradasPorRecorrerList.add(paradaPorRecorrer);
                                 }
 
-                                presenter.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latLngParadaActualColectivo[0], latLngParadaActualColectivo[1], latLngParadaActualPasajero[0], latLngParadaActualPasajero[1], paradaActualColeDire, codigoError, paradasPorRecorrerList);
+                                presenter.showArriboColectivo(fechaParadaActualString, tiempoArriboColProximoString, latLngParadaActualColectivo[0], latLngParadaActualColectivo[1], latLngParadaActualPasajero[0], latLngParadaActualPasajero[1], paradaActualColeDire, codigoError, paradasPorRecorrerList, paradaActualPasajeroDire);
 
                             }else{
                                 presenter.showMsajeSinColectivos(responseTiempoArriboColectivo, codigoError);

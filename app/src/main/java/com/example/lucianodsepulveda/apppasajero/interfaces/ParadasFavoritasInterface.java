@@ -12,7 +12,7 @@ public interface ParadasFavoritasInterface {
         // la vista muestra el dato una vez calculado
         void showResult(String result);
 
-        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList);
+        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire);
 
         void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError);
     }
@@ -26,18 +26,11 @@ public interface ParadasFavoritasInterface {
 
         NetworkInfo isNetAvailable();
 
-//        void showArriboColectivo(String result);
-        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList);
+        void showArriboColectivo(String fechaParadaActualString, String tiempoArriboColProximoString, String latParadaActualColectivo, String lngParadaActualColectivo, String latParadaActualPasajero, String lngParadaActualPasajero, String paradaActualColeDire, String codigoError, List<ParadaCercana> paradasPorRecorrerList, String paradaActualPasajeroDire);
 
         void showMsajeSinColectivos(String responseTiempoArriboColectivo, String codigoError);
     }
 
-    /*interface Model{
-        //mismo metodo para el modelo, se ejecuta en el model
-//        void alCuadrado(String data);
-        public boolean isNetAvailable();
-        public boolean isOnlineNet();
-    }*/
 
     interface Interactor {
         String makeRequestLlegadaCole(String idLineaQr, String idRecorridoQr, String idParadaQr );
